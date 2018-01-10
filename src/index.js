@@ -52,7 +52,8 @@ class GracefulImage extends Component {
           setTimeout(() => {
             image.src = this.props.src;
             this.setState((prevState) => ({
-              retryDelay: prevState.retryDelay + this.props.retry.delay,
+              // only increase retryDelay if got accumulate prop
+              retryDelay: this.props.retry.accumulate ? prevState.retryDelay + this.props.retry.delay : prevState.retryDelay,
               retryCount: prevState.retryCount + 1
             }));
           }, this.state.retryDelay * 1000);
@@ -119,7 +120,8 @@ GracefulImage.propTypes = {
   placeholderColor: PropTypes.string,
   retry: PropTypes.shape({
     count: PropTypes.number,
-    delay: PropTypes.number
+    delay: PropTypes.number,
+    accumulate: PropTypes.bool,
   }),
   noRetry: PropTypes.bool,
   noPlaceholder: PropTypes.bool
