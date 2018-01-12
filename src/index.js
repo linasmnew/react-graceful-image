@@ -6,7 +6,7 @@ const IS_SVG_SUPPORTED = !!(document.createElementNS && document.createElementNS
 class GracefulImage extends Component {
   state = {
     imageWorks: false,
-    retryDelay: 2,
+    retryDelay: (this.props.retry && this.props.retry.delay) || 2,
     retryCount: 1,
   };
 
