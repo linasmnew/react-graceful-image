@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const RETRY_COUNT_LIMIT = 8;
-const IS_SVG_SUPPORTED = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect)
+const IS_SVG_SUPPORTED = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect);
 
 class GracefulImage extends Component {
   state = {
@@ -32,34 +31,34 @@ class GracefulImage extends Component {
 
   handleImageRetries = (image) => {
     this.setState({ imageWorks: false }, () => {
-      // if no custom retry settings then use the default settings
-      if (!this.props.retry) {
 
-        // default retry is every 2^1...RETRY_COUNT_LIMIT seconds
-        if (this.state.retryCount <= RETRY_COUNT_LIMIT) {
-          setTimeout(() => {
-            image.src = this.props.src;
-            this.setState((prevState) => ({
-              retryDelay: prevState.retryDelay * 2,
+      if (this.state.retryCount <= this.props.retry.count) {
+
+        setTimeout(() => {
+          // re-attempt fetching the image
+          image.src = this.props.src;
+
+          // update count and delay
+          this.setState((prevState) => {
+            let updateDelay;
+            if (this.props.retry.algorithm === 'multiply') {
+              updateDelay = prevState.retryDelay * this.props.retry.delay;
+            } else if (this.props.retry.algorithm === 'add') {
+              updateDelay = prevState.retryDelay + this.props.retry.delay;
+            } else if (this.props.retry.algorithm === 'noop') {
+              updateDelay = this.props.retry.delay;
+            } else {
+              updateDelay = 'multiply';
+            }
+
+            return {
+              retryDelay: updateDelay,
               retryCount: prevState.retryCount + 1
-            }));
-          }, this.state.retryDelay * 1000);
-        }
-
-      } else { // else use the custom provided retry config
-
-        if (this.state.retryCount <= this.props.retry.count) {
-          setTimeout(() => {
-            image.src = this.props.src;
-            this.setState((prevState) => ({
-              // only increase retryDelay if got accumulate prop
-              retryDelay: this.props.retry.accumulate ? prevState.retryDelay + this.props.retry.delay : prevState.retryDelay,
-              retryCount: prevState.retryCount + 1
-            }));
-          }, this.state.retryDelay * 1000);
-        }
-
+            };
+          });
+        }, this.state.retryDelay * 1000);
       }
+
     });
   }
 
@@ -79,8 +78,13 @@ class GracefulImage extends Component {
     if (!this.state.imageWorks && (this.props.noPlaceholder || !IS_SVG_SUPPORTED)) return null;
 
     if (!this.state.imageWorks && !this.props.noPlaceholder && IS_SVG_SUPPORTED ) return (
-      <svg role='img' aria-label='Broken image placeholder' width={this.props.width} height={this.props.height}>
-        <rect width='100%' height='100%' fill={this.props.placeholderColor} />
+      <svg
+        role='img'
+        aria-label={this.props.alt}
+        width={this.props.width ? this.props.width : this.props.placeholder.width}
+        height={this.props.height ? this.props.height : this.props.placeholder.height}
+      >
+        <rect width='100%' height='100%' fill={this.props.placeholder.color} />
       </svg>
     );
 
@@ -104,8 +108,16 @@ GracefulImage.defaultProps = {
   height: null,
   alt: 'Broken image placeholder',
   style: {},
-  placeholderColor: '#eee',
-  retry: null,
+  placeholder: {
+    width: 150,
+    height: 150,
+    color: '#eee'
+  },
+  retry: {
+    count: 8,
+    delay: 2,
+    algorithm: 'multiply'
+  },
   noRetry: false,
   noPlaceholder: false
 };
@@ -117,11 +129,15 @@ GracefulImage.propTypes = {
   height: PropTypes.string,
   alt: PropTypes.string,
   style: PropTypes.object,
-  placeholderColor: PropTypes.string,
+  placeholder: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    color: PropTypes.String,
+  }),
   retry: PropTypes.shape({
     count: PropTypes.number,
     delay: PropTypes.number,
-    accumulate: PropTypes.bool,
+    algorithm: PropTypes.String,
   }),
   noRetry: PropTypes.bool,
   noPlaceholder: PropTypes.bool
