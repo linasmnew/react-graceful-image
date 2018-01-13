@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const DEFAULT_PLACEHOLDER_WIDTH = 150;
+const DEFAULT_PLACEHOLDER_HEIGHT = 150;
+
 const IS_SVG_SUPPORTED = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect);
 
 class GracefulImage extends Component {
@@ -76,18 +79,18 @@ class GracefulImage extends Component {
   */
   render() {
     if (!this.state.imageWorks && (this.props.noPlaceholder || !IS_SVG_SUPPORTED)) return null;
-    
+
     if (!this.state.imageWorks && !this.props.noPlaceholder && IS_SVG_SUPPORTED ) return (
       <svg
         role='img'
         aria-label={this.props.alt}
-        width={this.props.style && (this.props.style.width === 0 || this.props.style.width) ? this.props.style.width
-          : (this.props.width === 0 || this.props.width) ? this.props.width
-          : this.props.placeholder.width}
+        width={this.props.placeholder.width != DEFAULT_PLACEHOLDER_WIDTH ? this.props.placeholder.width
+          : this.props.style && (this.props.style.width === 0 || this.props.style.width) ? this.props.style.width
+          : (this.props.width === 0 || this.props.width) ? this.props.width : this.props.placeholder.width}
 
-        height={this.props.style && (this.props.style.height === 0 || this.props.style.height) ? this.props.style.height
-          : (this.props.height === 0 || this.props.height) ? this.props.height
-          : this.props.placeholder.height}
+          height={this.props.placeholder.height != DEFAULT_PLACEHOLDER_HEIGHT ? this.props.placeholder.height
+            : this.props.style && (this.props.style.height === 0 || this.props.style.height) ? this.props.style.height
+            : (this.props.height === 0 || this.props.height) ? this.props.height : this.props.placeholder.height}
       >
         <rect width='100%' height='100%' fill={this.props.placeholder.color} />
       </svg>
@@ -114,8 +117,8 @@ GracefulImage.defaultProps = {
   alt: 'Broken image placeholder',
   style: {},
   placeholder: {
-    width: 150,
-    height: 150,
+    width: DEFAULT_PLACEHOLDER_WIDTH,
+    height: DEFAULT_PLACEHOLDER_HEIGHT,
     color: '#eee'
   },
   retry: {
