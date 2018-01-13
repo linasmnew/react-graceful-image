@@ -39,7 +39,7 @@ While the image loads
 |**`className`**|Image class name |*None*|*String*|
 |**`alt`**|Image description |*"Broken image placeholder"*|*String*|
 |**`style`**|Image styles |*None*|*Object*|
-|**`placeholder`**|Placeholder's configuration, consisting of `width`, `height` and `color`|`{width: 150, height: 150, color: '#eee'}`|*Object*|
+|**`placeholder`**|Placeholder's configuration, consisting of `width`, `height` and `color`|*`{width: 150, height: 150, color: '#eee'}`*|*Object*|
 |**`noPlaceholder `**|Turn off placeholder rendering|*False*|*Bool*|
 |**`retry`**|Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate`|*`{count: 8, delay: 2, accumulate: 'multiply'`, ...*|*Object*|
 |**`noRetry`**|Turn off re-trying|*False*|*Bool*|
