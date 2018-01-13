@@ -81,8 +81,8 @@ class GracefulImage extends Component {
       <svg
         role='img'
         aria-label={this.props.alt}
-        width={this.props.width ? this.props.width : this.props.placeholder.width}
-        height={this.props.height ? this.props.height : this.props.placeholder.height}
+        width={this.props.width ? this.props.width : this.props.style && this.props.style.width ? this.props.style.width : this.props.placeholder.width}
+        height={this.props.height ? this.props.height : this.props.style && this.props.style.height ? this.props.style.height : this.props.placeholder.height}
       >
         <rect width='100%' height='100%' fill={this.props.placeholder.color} />
       </svg>
