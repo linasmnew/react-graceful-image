@@ -1,9 +1,7 @@
 React Graceful Image
 =============================
 
-An image component for gracefully dealing with image errors, by providing a placeholder and retries on failure.
-
-- Useful in situations where your application might be used in moments of poor signal such as when travelling on a train, bus or in a car
+An image component for gracefully dealing with image errors, by providing a placeholder and retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, bus or in a car.
 
 ## Installation
 
