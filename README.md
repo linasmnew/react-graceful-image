@@ -77,8 +77,8 @@ class YourComponent extends Component {
             src="path_to_image"
             width="250"
             height="250"
-            alt="My awesome image"
             retry={{count: 10, delay: 2}}
+            alt="My awesome image"
        />
     );
   }
@@ -97,8 +97,8 @@ class YourComponent extends Component {
         <Image
             src="path_to_image"
             className="content-image"
-            alt="My awesome image"
             placeholder={{color: '#0083FE', width: '250', height: '250'}}
+            alt="My awesome image"
        />
     );
   }
