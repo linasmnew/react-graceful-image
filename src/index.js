@@ -76,13 +76,18 @@ class GracefulImage extends Component {
   */
   render() {
     if (!this.state.imageWorks && (this.props.noPlaceholder || !IS_SVG_SUPPORTED)) return null;
-
+    
     if (!this.state.imageWorks && !this.props.noPlaceholder && IS_SVG_SUPPORTED ) return (
       <svg
         role='img'
         aria-label={this.props.alt}
-        width={this.props.width ? this.props.width : this.props.style && this.props.style.width ? this.props.style.width : this.props.placeholder.width}
-        height={this.props.height ? this.props.height : this.props.style && this.props.style.height ? this.props.style.height : this.props.placeholder.height}
+        width={this.props.style && (this.props.style.width === 0 || this.props.style.width) ? this.props.style.width
+          : (this.props.width === 0 || this.props.width) ? this.props.width
+          : this.props.placeholder.width}
+
+        height={this.props.style && (this.props.style.height === 0 || this.props.style.height) ? this.props.style.height
+          : (this.props.height === 0 || this.props.height) ? this.props.height
+          : this.props.placeholder.height}
       >
         <rect width='100%' height='100%' fill={this.props.placeholder.color} />
       </svg>
