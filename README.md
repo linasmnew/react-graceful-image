@@ -63,6 +63,8 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 
 
 ### Examples
+
+#### 1
 Below code snippet will load the given image, while the image loads it will display an SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 10 times, with 2 second delay between each try.
 
 ```js
@@ -84,6 +86,7 @@ class YourComponent extends Component {
 }
 ```
 
+#### 2
 Below code snippet will load the given image, while the image loads it will display a blue SVG placeholder of 250px width and 250px height. If loading the image fails, then it will retry loading the image again for a maximum of 8 times, with 2 second delay between each try.
 
 ```js
@@ -104,7 +107,7 @@ class YourComponent extends Component {
 }
 ```
 
-
+#### 3
 Below code snippet will load the given image, while the image loads it will display an SVG placeholder of 150px width and 150px height. If loading the image fails, then it will retry loading the image again for a maximum of 15 times, with initial delay of 3 seconds which will then increase to 6 seconds, then to 9 seconds, then to 12 seconds, and so on.
 
 ```js
