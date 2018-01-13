@@ -44,11 +44,11 @@ class GracefulImage extends Component {
           // update count and delay
           this.setState((prevState) => {
             let updateDelay;
-            if (this.props.retry.algorithm === 'multiply') {
+            if (this.props.retry.accumulate === 'multiply') {
               updateDelay = prevState.retryDelay * this.props.retry.delay;
-            } else if (this.props.retry.algorithm === 'add') {
+            } else if (this.props.retry.accumulate === 'add') {
               updateDelay = prevState.retryDelay + this.props.retry.delay;
-            } else if (this.props.retry.algorithm === 'noop') {
+            } else if (this.props.retry.accumulate === 'noop') {
               updateDelay = this.props.retry.delay;
             } else {
               updateDelay = 'multiply';
@@ -85,12 +85,15 @@ class GracefulImage extends Component {
         role='img'
         aria-label={this.props.alt}
         width={this.props.placeholder.width != DEFAULT_PLACEHOLDER_WIDTH ? this.props.placeholder.width
-          : this.props.style && (this.props.style.width === 0 || this.props.style.width) ? this.props.style.width
-          : (this.props.width === 0 || this.props.width) ? this.props.width : this.props.placeholder.width}
-
-          height={this.props.placeholder.height != DEFAULT_PLACEHOLDER_HEIGHT ? this.props.placeholder.height
-            : this.props.style && (this.props.style.height === 0 || this.props.style.height) ? this.props.style.height
-            : (this.props.height === 0 || this.props.height) ? this.props.height : this.props.placeholder.height}
+          : this.props.style && (this.props.style.width == 0 || this.props.style.width) ? this.props.style.width
+          : (this.props.width == 0 || this.props.width) ? this.props.width
+          : this.props.placeholder.width
+        }
+        height={this.props.placeholder.height != DEFAULT_PLACEHOLDER_HEIGHT ? this.props.placeholder.height
+          : this.props.style && (this.props.style.height == 0 || this.props.style.height) ? this.props.style.height
+          : (this.props.height == 0 || this.props.height) ? this.props.height
+          : this.props.placeholder.height
+        }
       >
         <rect width='100%' height='100%' fill={this.props.placeholder.color} />
       </svg>
@@ -124,7 +127,7 @@ GracefulImage.defaultProps = {
   retry: {
     count: 8,
     delay: 2,
-    algorithm: 'multiply'
+    accumulate: 'multiply'
   },
   noRetry: false,
   noPlaceholder: false
@@ -133,19 +136,31 @@ GracefulImage.defaultProps = {
 GracefulImage.propTypes = {
   src: PropTypes.string.isRequired,
   className: PropTypes.string,
-  width: PropTypes.string,
-  height: PropTypes.string,
+  width: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]),
+  height: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]),
   alt: PropTypes.string,
   style: PropTypes.object,
   placeholder: PropTypes.shape({
-    width: PropTypes.number,
-    height: PropTypes.number,
-    color: PropTypes.String,
+    width: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]),
+    height: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]),
+    color: PropTypes.string
   }),
   retry: PropTypes.shape({
     count: PropTypes.number,
     delay: PropTypes.number,
-    algorithm: PropTypes.String,
+    accumulate: PropTypes.string,
   }),
   noRetry: PropTypes.bool,
   noPlaceholder: PropTypes.bool
