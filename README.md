@@ -25,11 +25,9 @@ class YourComponent extends Component {
 ### Default Behaviour
 
 While the image loads
-1. Render an SVG placeholder
-1.1. If environment doesn't support SVG, then avoid rendering the placeholder
+1. Render an SVG placeholder - if environment doesn't support SVG, then avoid rendering the placeholder
 2. If image loads successfully then display the image
-3. If image fails to load
-3.1. Retry loading the image starting with a 2 second delay and doubling it with every retry - by default retry stops after 8 tries
+3. If image fails to load - retry loading the image starting with a 2 second delay and doubling it with every retry *(by default retry stops after 8 tries)*
 
 ### Prop Options
 
