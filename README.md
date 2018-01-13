@@ -54,7 +54,7 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 
 - `count` specifies the number of times you want to retry
 - `delay` specifies the delay between retries (in seconds)
-- `accumulate` specifies how the delay should increase with each retry, **possible values:** `"multiply"` (default), `"add"` or `false` (false can also be represented by simply omitting this property)
+- `accumulate` specifies how the delay should increase with each retry, **_possible values:_** `"multiply"` (default), `"add"` or `false` (false can also be represented by simply omitting this property)
 
 #### Accumulate
 - `accumulate: "multiply"` will multiply delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 8 seconds, 4th retry will be in 16 seconds etc.
