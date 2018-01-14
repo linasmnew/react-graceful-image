@@ -44,12 +44,14 @@ While the image loads
 |**`retry`**|Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate`|*`{count: 8, delay: 2, accumulate: 'multiply'`, ...*|*Object*|
 |**`noRetry`**|Turn off re-trying|*False*|*Bool*|
 
-**Note**: Setting an image's width and height via a `style` prop, or via explicit `width` and `height` props will also apply that width and height to the placeholder - unless you explicit provide different width and height values via the `placeholder` prop.
+### Placeholder
 
-Also note that, if you set an image's width and height via a className through a CSS file then the placeholder will use its own default width and height, unless you explicit give it a different width and height via the `placeholder` prop.
+Setting an image's width and height via a `style` prop, or via explicit `width` and `height` props will also apply that width and height to the placeholder.
 
+However, if you set an image's width and height via a className through a CSS file then the placeholder will use its own default width and height, unless you explicit give it a different width and height via the `placeholder` prop.
 
 ### Retry
+
 You can modify the default retry algorithm by supplying a `retry` prop consisting of 3 properties: `count`, `delay` and `accumulate`:
 
 - `count` specifies the number of times you want to retry
@@ -57,10 +59,10 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 - `accumulate` specifies how the delay should increase with each retry, **_possible values:_** `"multiply"` (default), `"add"` or `false` (false can also be represented by simply omitting this property)
 
 #### Accumulate
+
 - `accumulate: "multiply"` will multiply delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 8 seconds, 4th retry will be in 16 seconds etc.
 - `accumulate: "add"` will increment delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 6 seconds, 4th retry will be in 8 seconds, etc.
 - `accumulate: "false"` will keep the delay constant between retries, i.e. if `delay: 2` is given then retry will run every 2 seconds
-
 
 ### Examples
 
