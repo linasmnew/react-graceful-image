@@ -44,12 +44,6 @@ While the image loads
 |**`retry`**|Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate`|*`{count: 8, delay: 2, accumulate: 'multiply'`, ...*|*object*|
 |**`noRetry`**|Turn off re-trying|*false*|*bool*|
 
-### Placeholder
-
-Setting an image's width and height via a `style` prop, or via explicit `width` and `height` props will also apply that width and height to the placeholder.
-
-**Note** - Due to the way the placeholder is implemented, if you change the image's default display property via a className in a CSS file, you will also need to reflect it in the placeholder via the `styles` prop. (This is only necessary for the display property.)
-
 ### Retry
 
 You can modify the default retry algorithm by supplying a `retry` prop consisting of 3 properties: `count`, `delay` and `accumulate`:
@@ -66,7 +60,7 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 
 ### Examples
 
-**1**: Below code snippet will load the given image, while the image loads it will display a light grey (default) SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 10 times, with 2 second delay between each try (default retry configuration).
+**1**: Below code snippet will load the given image, while the image loads it will display a light grey (default) SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 10 times, with a fixed 2 second delay between each try.
 
 ```js
 import React, { Component } from 'react'
@@ -79,15 +73,16 @@ class YourComponent extends Component {
             src="path_to_image"
             width="250"
             height="250"
-            retry={{count: 10, delay: 2}}
+            style={{padding: '20px'}}
             alt="My awesome image"
+            retry={{count: 10, delay: 2}}
        />
     );
   }
 }
 ```
 
-**2**: Below code snippet will load the given image, while the image loads it will display a blue SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 8 times, with 2 second delay between each try (default retry configuration).
+**2**: Below code snippet will load the given image, while the image loads it will display a blue SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 8 times, with initial delay of 2 seconds, which will then increase to 4 seconds, then to 8 seconds, then to 16 seconds, and so on (default retry configuration).
 
 ```js
 import React, { Component } from 'react'
@@ -99,8 +94,8 @@ class YourComponent extends Component {
         <Image
             src="path_to_image"
             className="content-image"
-            placeholderColor="#0083FE"
             alt="My awesome image"
+            placeholderColor="#0083FE"
        />
     );
   }
@@ -120,8 +115,9 @@ class YourComponent extends Component {
             src="path_to_image"
             width="150"
             height="150"
-            retry={{count: 15, delay: 3, accumulate: 'add'}}
+            style={{padding: '20px'}}
             alt="My awesome image"
+            retry={{count: 15, delay: 3, accumulate: 'add'}}
        />
     );
   }
