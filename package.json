@@ -1,7 +1,7 @@
 {
   "name": "react-graceful-image",
   "version": "1.0.0",
-  "description": "An image component for gracefully dealing with errors, by providing placeholders and retries on failure",
+  "description": "An image component for gracefully dealing with images errors by providing a placeholder and retries on failure",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -37,7 +37,7 @@
   "keywords": [
     "react",
     "react-component",
-    "image",
-    "placeholder"
+    "react-image",
+    "react-placeholder",
   ]
 }
