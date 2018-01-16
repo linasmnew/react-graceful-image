@@ -1,18 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const DEFAULT_PLACEHOLDER_WIDTH = 150;
-const DEFAULT_PLACEHOLDER_HEIGHT = 150;
-
 const IS_SVG_SUPPORTED = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect);
 
 class GracefulImage extends Component {
-  state = {
-    imageWorks: false,
-    retryDelay: (this.props.retry && this.props.retry.delay) || 2,
-    retryCount: 1,
-  };
+  constructor(props) {
+    super(props);
 
+    let placeholder = null;
+    if (IS_SVG_SUPPORTED) {
+      let width = (this.props.style && this.props.style.width) ? this.props.style.width : this.props.width ? this.props.width : '200';
+      let height = (this.props.style && this.props.style.height) ? this.props.style.height : this.props.height ? this.props.height : '150';
+      placeholder = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'{{w}}' height%3D'{{h}}' viewBox%3D'0 0 {{w}} {{h}}'%2F%3E";
+      placeholder = placeholder.replace(/{{w}}/g, width).replace(/{{h}}/g, height);
+    }
+
+    this.state = {
+      imageWorks: false,
+      retryDelay: this.props.retry.delay,
+      retryCount: 1,
+      placeholder: placeholder
+    };
+  }
+
+  /*
+    Attempts to load an image src passed via props
+    and utilises image events to track sccess / failure of the loading
+  */
   componentDidMount() {
     // if user has not opted-out from retrying then handle re-trying
     if (!this.props.noRetry) {
@@ -32,7 +46,11 @@ class GracefulImage extends Component {
     }
   }
 
-  handleImageRetries = (image) => {
+  /*
+    Handles the actual re-attempts of loading the image
+    following the default / provided retry algorithm
+  */
+  handleImageRetries(image) {
     this.setState({ imageWorks: false }, () => {
 
       if (this.state.retryCount <= this.props.retry.count) {
@@ -66,51 +84,40 @@ class GracefulImage extends Component {
   }
 
   /*
-    if image failed to load AND
-      user didn't want a placeholder OR no support for SVG
-        then don't render anything
-
-    if image failed to load AND
-      user wants a placeholder AND SVG support exists
-        then render the placeholder
-
-    if image worked
-      then render the image
+    - if user didn't want a placeholder OR SVG not supported AND image doesn't work then don't render anything
+    - if image failed to load then render the placeholder
+    - else the image worked so render the image
   */
   render() {
-    if (!this.state.imageWorks && (this.props.noPlaceholder || !IS_SVG_SUPPORTED)) return null;
+    if ((this.props.noPlaceholder || !IS_SVG_SUPPORTED) && !this.state.imageWorks) return null;
 
-    if (!this.state.imageWorks && !this.props.noPlaceholder && IS_SVG_SUPPORTED ) return (
-      <svg
-        role='img'
-        aria-label={this.props.alt}
-        width={this.props.placeholder.width != DEFAULT_PLACEHOLDER_WIDTH ? this.props.placeholder.width
-          : this.props.style && (this.props.style.width == 0 || this.props.style.width) ? this.props.style.width
-          : (this.props.width == 0 || this.props.width) ? this.props.width
-          : this.props.placeholder.width
-        }
-        height={this.props.placeholder.height != DEFAULT_PLACEHOLDER_HEIGHT ? this.props.placeholder.height
-          : this.props.style && (this.props.style.height == 0 || this.props.style.height) ? this.props.style.height
-          : (this.props.height == 0 || this.props.height) ? this.props.height
-          : this.props.placeholder.height
-        }
-      >
-        <rect width='100%' height='100%' fill={this.props.placeholder.color} />
-      </svg>
-    );
+    if (!this.state.imageWorks && !this.props.noPlaceholder && IS_SVG_SUPPORTED) {
+      return (
+        <img
+           src={this.state.placeholder}
+           className={this.props.className}
+           width={this.props.width}
+           height={this.props.height}
+           style={{backgroundColor: this.props.placeholderColor, ...this.props.style}}
+           alt={this.props.alt}
+        />
+      );
+    } else {
+      return (
+        <img
+          src={this.props.src}
+          className={this.props.className}
+          width={this.props.width}
+          height={this.props.height}
+          style={{...this.props.style}}
+          alt={this.props.alt}
+        />
+      );
+    }
 
-    if (this.state.imageWorks) return (
-      <img
-        src={this.props.src}
-        className={this.props.className}
-        style={{...this.props.style}}
-        width={this.props.width}
-        height={this.props.height}
-        alt={this.props.alt}
-      />
-    );
   }
 }
+
 
 GracefulImage.defaultProps = {
   src: null,
@@ -119,11 +126,7 @@ GracefulImage.defaultProps = {
   height: null,
   alt: 'Broken image placeholder',
   style: {},
-  placeholder: {
-    width: DEFAULT_PLACEHOLDER_WIDTH,
-    height: DEFAULT_PLACEHOLDER_HEIGHT,
-    color: '#eee'
-  },
+  placeholderColor: '#eee',
   retry: {
     count: 8,
     delay: 2,
@@ -146,17 +149,7 @@ GracefulImage.propTypes = {
   ]),
   alt: PropTypes.string,
   style: PropTypes.object,
-  placeholder: PropTypes.shape({
-    width: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string
-    ]),
-    height: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string
-    ]),
-    color: PropTypes.string
-  }),
+  placeholderColor: PropTypes.string,
   retry: PropTypes.shape({
     count: PropTypes.number,
     delay: PropTypes.number,
