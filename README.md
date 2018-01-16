@@ -41,7 +41,7 @@ While the image loads
 |**`style`**|Image styles |*None*|*object*|
 |**`placeholderColor`**|Placeholder's color|*"#eee"*|*string*|
 |**`noPlaceholder `**|Turn off placeholder rendering|*false*|*bool*|
-|**`retry`**|Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate`|*`{count: 8, delay: 2, accumulate: 'multiply'`, ...*|*object*|
+|**`retry`**|Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate`|*`{count: 8, delay: 2, accumulate: 'multiply'`}*|*object*|
 |**`noRetry`**|Turn off re-trying|*false*|*bool*|
 
 ### Retry
