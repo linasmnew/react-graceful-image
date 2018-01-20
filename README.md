@@ -25,6 +25,8 @@ An image component for gracefully dealing with image errors, by providing a plac
 3. With react-graceful-image disabled placeholder
 4. With react-graceful-image retries - if the image fails to load, the package will gracefully re-attempt loading the image again
 
+_(**_note:_** these are not mutually exclusive, for example the default behaviour makes use of both 2 & 4 together.)_
+
 ### Installation
 
 ```sh
