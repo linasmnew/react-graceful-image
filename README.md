@@ -3,10 +3,7 @@ React Graceful Image
 
 An image component for gracefully dealing with image errors, by providing a placeholder and retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, bus or in a car.
 
-1. Default browser behaviour when image fails due to bad signal
-2. With react-graceful-image you can instead display a placeholder
-3. You can also disable the placeholder and prevent broken image from rendering
-4. Lastly, the package provides graceful retries, so even if the image fails, it will re-attempt loading the image again
+### Example
 
 <table>
 <tr>
@@ -23,7 +20,12 @@ An image component for gracefully dealing with image errors, by providing a plac
   </tr>
 </table>
 
-## Installation
+1. Default browser behaviour when image fails due to bad signal
+2. With react-graceful-image placeholder
+3. With react-graceful-image disabled placeholder
+4. With react-graceful-image retries - if the image fails to load, the package will gracefully re-attempt loading the image again
+
+### Installation
 
 ```sh
 npm install --save react-graceful-image
