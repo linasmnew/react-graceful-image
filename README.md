@@ -3,6 +3,26 @@ React Graceful Image
 
 An image component for gracefully dealing with image errors, by providing a placeholder and retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, bus or in a car.
 
+1. Default browser behaviour when image fails due to bad signal
+2. With react-graceful-image you can instead display a placeholder
+3. You can also disable the placeholder and prevent broken image from rendering
+4. Lastly, the package provides graceful retries, so even if the image fails, it will re-attempt loading the image again
+
+<table>
+<tr>
+<th>1</th>
+<th>2</th>
+<th> 3</th>
+<th> 4</th>
+</tr>
+  <tr>
+    <td><img src="https://user-images.githubusercontent.com/16339741/35174790-8ebe4bcc-fd68-11e7-935b-f15407ef2d94.png" alt="browser broken image" width="200" height="129.411764706"></td>
+    <td><img src="https://user-images.githubusercontent.com/16339741/35175624-6aad9568-fd6c-11e7-9aa0-329a5d2b1728.png" alt="browser with placeholder image" width="200" height="129.411764706"></td>
+    <td><img src="https://user-images.githubusercontent.com/16339741/35175639-83d1a656-fd6c-11e7-9812-480c251acf98.png" alt="browser without placeholder image" width="200" height="129.411764706"></td>
+    <td><img src="https://user-images.githubusercontent.com/16339741/35177052-c962542e-fd74-11e7-8b46-325f444c7970.png" alt="browser with working image after retry" width="200" height="129.411764706"></td>
+  </tr>
+</table>
+
 ## Installation
 
 ```sh
