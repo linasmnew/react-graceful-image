@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const fadeIn = `
+  @keyframes gracefulImage-fade-in {
+    0%   { opacity: 0.25; }
+    50%  { opacity: 0.50; }
+    100% { opacity: 1; }
+  }
+`;
+
 const IS_SVG_SUPPORTED = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect);
 
 class GracefulImage extends Component {
@@ -21,6 +29,22 @@ class GracefulImage extends Component {
       retryCount: 1,
       placeholder: placeholder
     };
+  }
+
+  /*
+    Creating a stylesheet to hold the fading animation
+  */
+  componentWillMount() {
+    let exists = document.head.querySelectorAll('[data-gracefulimage]');
+
+    if (!exists.length) {
+      const styleElement = document.createElement('style');
+      styleElement.type = 'text/css';
+      styleElement.setAttribute('data-gracefulimage', 'exists');
+
+      document.head.appendChild(styleElement);
+      styleElement.sheet.insertRule(fadeIn, styleElement.sheet.cssRules.length);
+    }
   }
 
   /*
@@ -104,14 +128,20 @@ class GracefulImage extends Component {
       );
     } else {
       return (
-        <img
-          src={this.props.src}
-          className={this.props.className}
-          width={this.props.width}
-          height={this.props.height}
-          style={{...this.props.style}}
-          alt={this.props.alt}
-        />
+          <img
+            src={this.props.src}
+            className={this.props.className}
+            width={this.props.width}
+            height={this.props.height}
+            style={{
+              animationDuration: '0.3s',
+              animationIterationCount: 1,
+              animationName: 'gracefulImage-fade-in',
+              animationTimingFunction: 'ease-in',
+              ...this.props.style,
+            }}
+            alt={this.props.alt}
+          />
       );
     }
 
