@@ -70,6 +70,12 @@ class GracefulImage extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.timeout) {
+      window.clearTimeout(this.timeout);
+    }
+  }
+
   /*
     Handles the actual re-attempts of loading the image
     following the default / provided retry algorithm
@@ -79,7 +85,7 @@ class GracefulImage extends Component {
 
       if (this.state.retryCount <= this.props.retry.count) {
 
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
           // re-attempt fetching the image
           image.src = this.props.src;
 
