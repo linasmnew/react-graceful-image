@@ -18,8 +18,8 @@ class GracefulImage extends Component {
     let placeholder = null;
 
     if (IS_SVG_SUPPORTED) {
-      let width = (this.props.style && this.props.style.width) ? this.props.style.width : this.props.width ? this.props.width : '200';
-      let height = (this.props.style && this.props.style.height) ? this.props.style.height : this.props.height ? this.props.height : '150';
+      const width = (this.props.style && this.props.style.width) ? this.props.style.width : this.props.width ? this.props.width : '200';
+      const height = (this.props.style && this.props.style.height) ? this.props.style.height : this.props.height ? this.props.height : '150';
       placeholder = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'{{w}}' height%3D'{{h}}' viewBox%3D'0 0 {{w}} {{h}}'%2F%3E";
       placeholder = placeholder.replace(/{{w}}/g, width).replace(/{{h}}/g, height);
     }
