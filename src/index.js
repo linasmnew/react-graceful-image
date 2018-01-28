@@ -127,7 +127,7 @@ class GracefulImage extends Component {
           width={this.props.width}
           height={this.props.height}
           style={{
-            background: `#eee url(${this.props.src}) 0 0 / 0 0 no-repeat`,
+            background: `${this.props.placeholderColor} url(${this.props.src}) 0 0 / 0 0 no-repeat`,
             ...this.props.style
           }}
           alt={this.props.alt}
