@@ -1,7 +1,7 @@
 React Graceful Image
 =============================
 
-An image component for gracefully dealing with image errors, by providing optional lazy loading, optional placeholder and retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, a bus or a car.
+An image component for gracefully dealing with image errors, by providing optional lazy loading, optional placeholder and configurable retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, a bus or a car.
 
 ### Example
 
