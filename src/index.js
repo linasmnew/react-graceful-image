@@ -1,6 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+function registerListener(event, func) {
+  if (window.addEventListener) {
+    window.addEventListener(event, func);
+  } else {
+    window.attachEvent('on' + event, func);
+  }
+}
+
+function isInViewport(el) {
+	var rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.top <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+    rect.left <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+  );
+}
+
 const fadeIn = `
   @keyframes gracefulimage {
     0%   { opacity: 0.25; }
@@ -14,7 +32,6 @@ const IS_SVG_SUPPORTED =  document.implementation.hasFeature("http://www.w3.org/
 class GracefulImage extends Component {
   constructor(props) {
     super(props);
-
     let placeholder = null;
 
     if (IS_SVG_SUPPORTED) {
@@ -32,6 +49,7 @@ class GracefulImage extends Component {
     };
   }
 
+
   /*
     Creating a stylesheet to hold the fading animation
   */
@@ -41,38 +59,74 @@ class GracefulImage extends Component {
     if (!exists.length) {
       const styleElement = document.createElement('style');
       styleElement.setAttribute('data-gracefulimage', 'exists');
-
       document.head.appendChild(styleElement);
       styleElement.sheet.insertRule(fadeIn, styleElement.sheet.cssRules.length);
     }
   }
+
+
+  /*
+    Attempts to download an image, and tracks its success / failure
+  */
+  loadImage() {
+    const image = new Image();
+    image.onload = () => {
+      this.setState({ loaded: true });
+    }
+    image.onerror = () => {
+      this.handleImageRetries(image);
+    }
+    image.src = this.props.src;
+  }
+
+
+  /*
+    If placeholder is currently within the viewport then load the actual image
+    and remove all event listeners associated with it
+  */
+  lazyLoad = () => {
+    if (isInViewport(this.placeholderImage)) {
+      this.clearEventListeners();
+      this.loadImage();
+    }
+  }
+
 
   /*
     Attempts to load an image src passed via props
     and utilises image events to track sccess / failure of the loading
   */
   componentDidMount() {
-    // if user has not opted-out from retrying then handle re-trying
-    if (!this.props.noRetry) {
-      const image = new Image();
-
-      image.onload = () => {
-        this.setState({ loaded: true });
-      }
-
-      image.onerror = () => {
-        this.handleImageRetries(image);
-      }
-
-      image.src = this.props.src;
+    if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
+      registerListener('load', this.lazyLoad); // Not working on jsFiddle, use ready( func );
+      registerListener('scroll', this.lazyLoad);
+      registerListener('resize', this.lazyLoad);
+      registerListener('gestureend', this.lazyLoad); // to detect pinch on mobile devices
+    } else {
+      this.loadImage();
     }
   }
 
+
+  clearEventListeners() {
+    window.removeEventListener('load', this.lazyLoad);
+    window.removeEventListener('scroll', this.lazyLoad);
+    window.removeEventListener('resize', this.lazyLoad);
+    window.removeEventListener('gestureend', this.lazyLoad);
+  }
+
+
+  /*
+    Clear timeout incase retry is still running
+    And clear any existing event listeners
+  */
   componentWillUnmount() {
     if (this.timeout) {
       window.clearTimeout(this.timeout);
     }
+    this.clearEventListeners();
   }
+
 
   /*
     Handles the actual re-attempts of loading the image
@@ -131,6 +185,7 @@ class GracefulImage extends Component {
             ...this.props.style
           }}
           alt={this.props.alt}
+          ref={(ref) => this.placeholderImage = ref}
         />
       );
     }
@@ -171,7 +226,8 @@ GracefulImage.defaultProps = {
     accumulate: 'multiply'
   },
   noRetry: false,
-  noPlaceholder: false
+  noPlaceholder: false,
+  noLazyLoad: false,
 };
 
 GracefulImage.propTypes = {
@@ -194,7 +250,8 @@ GracefulImage.propTypes = {
     accumulate: PropTypes.string,
   }),
   noRetry: PropTypes.bool,
-  noPlaceholder: PropTypes.bool
+  noPlaceholder: PropTypes.bool,
+  noLazyLoad: PropTypes.bool,
 };
 
 export default GracefulImage;
