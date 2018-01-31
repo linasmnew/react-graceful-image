@@ -1,7 +1,7 @@
 React Graceful Image
 =============================
 
-An image component for gracefully dealing with image errors, by providing a placeholder and retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, a bus or a car.
+An image component for gracefully dealing with image errors, by providing lazy loading, a placeholder and retries on failure. Particularly useful in situations where your application might be used in poor signal areas such as when travelling on a train, a bus or a car.
 
 ### Example
 
@@ -48,10 +48,10 @@ class YourComponent extends Component {
 
 ### Default Behaviour
 
-While the image loads
 1. Render an SVG placeholder - if environment doesn't support SVG, then avoid rendering the placeholder
-2. If image loads successfully then display the image
-3. If image fails to load - retry loading the image starting with a 2 second delay and doubling it with every retry *(by default retry stops after 8 tries)*
+2. Check if placeholder is within the visible viewport and if so load the image
+3. If image loads successfully then display the image by fading it in
+4. If image fails to load - retry loading the image starting with a 2 second delay and doubling it with every retry *(by default retry stops after 8 tries)*
 
 ### Prop Options
 
@@ -67,6 +67,7 @@ While the image loads
 |**`noPlaceholder `**|Turn off placeholder rendering|*false*|*bool*|
 |**`retry`**|Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate`|*`{count: 8, delay: 2, accumulate: 'multiply'}`*|*object*|
 |**`noRetry`**|Turn off re-trying|*false*|*bool*|
+|**`noLazyLoad`**|Turn off lazy loading|*false*|*bool*|
 
 ### Retry
 
@@ -84,7 +85,7 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 
 ### Examples
 
-**1**: Below code snippet will load the given image, while the image loads it will display a light grey (default) SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 10 times, with a fixed 2 second delay between each try.
+**1**: Below code snippet will display a light grey (default) SVG placeholder, if it is within the visible viewport then it will load the actual given image and fade it in once it is done loading. If loading the image fails, then it will retry loading the image again for a maximum of 10 times, with a fixed 2 second delay between each try.
 
 ```js
 import React, { Component } from 'react'
@@ -106,7 +107,7 @@ class YourComponent extends Component {
 }
 ```
 
-**2**: Below code snippet will load the given image, while the image loads it will display a blue SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 8 times, with initial delay of 2 seconds, which will then increase to 4 seconds, then to 8 seconds, then to 16 seconds, and so on (default retry configuration).
+**2**: Below code snippet will display a blue SVG placeholder, if it is within the visible viewport then it will load the actual given image and fade it in once it is done loading. If loading the image fails, then it will retry loading the image again for a maximum of 8 times, with initial delay of 2 seconds, which will then increase to 4 seconds, then to 8 seconds, then to 16 seconds, and so on (default retry configuration).
 
 ```js
 import React, { Component } from 'react'
@@ -126,7 +127,8 @@ class YourComponent extends Component {
 }
 ```
 
-**3**: Below code snippet will load the given image, while the image loads it will display a light grey (default) SVG placeholder. If loading the image fails, then it will retry loading the image again for a maximum of 15 times, with initial delay of 3 seconds which will then increase to 6 seconds, then to 9 seconds, then to 12 seconds, and so on.
+
+**3**: Below code snippet will display a light grey (default) SVG placeholder, if it is within the visible viewport then it will load the actual given image and fade it in once it is done loading. If loading the image fails, then it will retry loading the image again for a maximum of 15 times, with initial delay of 3 seconds which will then increase to 6 seconds, then to 9 seconds, then to 12 seconds, and so on.
 
 ```js
 import React, { Component } from 'react'
