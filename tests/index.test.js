@@ -59,10 +59,9 @@ describe('react-graceful-image', () => {
       height: '150',
       placeholderColor: '#aaa',
     };
-    let background = `${props.placeholderColor} url(${props.src}) 0 0 / 0 0 no-repeat`;
     const shallowWrapper = shallow(<GracefulImage {...props} />);
 
-    expect(shallowWrapper.find('img').prop('style')).toHaveProperty('background', background);
+    expect(shallowWrapper.find('img').prop('style')).toHaveProperty('background', props.placeholderColor);
   });
 
   it('should change placeholder\'s and loaded image\'s alt value', () => {
