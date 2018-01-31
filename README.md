@@ -49,8 +49,8 @@ class YourComponent extends Component {
 ### Default Behaviour
 
 1. Render an SVG placeholder - if environment doesn't support SVG, then avoid rendering the placeholder
-2. Check if placeholder is within the visible viewport and if so load the image
-3. If image loads successfully then display the image by fading it in
+2. Check if placeholder is within the visible viewport - if so then load the image
+3. If image loads successfully - display the image by fading it in
 4. If image fails to load - retry loading the image starting with a 2 second delay and doubling it with every retry *(by default retry stops after 8 tries)*
 
 ### Prop Options
