@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import throttle from 'lodash.throttle';
 
 function registerListener(event, func) {
   if (window.addEventListener) {
@@ -40,6 +41,9 @@ class GracefulImage extends Component {
       placeholder = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'{{w}}' height%3D'{{h}}' viewBox%3D'0 0 {{w}} {{h}}'%2F%3E";
       placeholder = placeholder.replace(/{{w}}/g, width).replace(/{{h}}/g, height);
     }
+
+    // store a reference to the throttled function
+    this.throttledFunction = throttle(this.lazyLoad, 100);
 
     this.state = {
       loaded: false,
@@ -98,10 +102,10 @@ class GracefulImage extends Component {
   */
   componentDidMount() {
     if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
-      registerListener('load', this.lazyLoad); // Not working on jsFiddle, use ready( func );
-      registerListener('scroll', this.lazyLoad);
-      registerListener('resize', this.lazyLoad);
-      registerListener('gestureend', this.lazyLoad); // to detect pinch on mobile devices
+      registerListener('load', this.throttledFunction);
+      registerListener('scroll', this.throttledFunction);
+      registerListener('resize', this.throttledFunction);
+      registerListener('gestureend', this.throttledFunction); // to detect pinch on mobile devices
     } else {
       this.loadImage();
     }
@@ -109,10 +113,10 @@ class GracefulImage extends Component {
 
 
   clearEventListeners() {
-    window.removeEventListener('load', this.lazyLoad);
-    window.removeEventListener('scroll', this.lazyLoad);
-    window.removeEventListener('resize', this.lazyLoad);
-    window.removeEventListener('gestureend', this.lazyLoad);
+    window.removeEventListener('load', this.throttledFunction);
+    window.removeEventListener('scroll', this.throttledFunction);
+    window.removeEventListener('resize', this.throttledFunction);
+    window.removeEventListener('gestureend', this.throttledFunction);
   }
 
 

@@ -1,6 +1,6 @@
 {
   "name": "react-graceful-image",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "An image component for gracefully dealing with images errors by providing a placeholder and retries on failure",
   "main": "lib/index.js",
   "scripts": {
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/linasmnew/react-graceful-image#readme",
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "prop-types": "^15.0.0"
   },
   "devDependencies": {
