@@ -167,47 +167,35 @@ class GracefulImage extends Component {
 
   /*
     - If image hasn't yet loaded AND user didn't want a placeholder OR SVG not supported then don't render anything
-    - Else if image hasn't yet loaded and SVG is supported then render the SVG
-    - Else render the image
+    - Else if image has loaded then render the image
+    - Else render the placeholder
   */
   render() {
     if (!this.state.loaded && (this.props.noPlaceholder || !IS_SVG_SUPPORTED)) return null;
 
-    if (!this.state.loaded && IS_SVG_SUPPORTED) {
-      return (
-        <img
-          src={this.state.placeholder}
-          className={this.props.className}
-          width={this.props.width}
-          height={this.props.height}
-          style={{
-            background: this.props.placeholderColor,
-            ...this.props.style
-          }}
-          alt={this.props.alt}
-          ref={(ref) => this.placeholderImage = ref}
-        />
-      );
-    }
+    const src = this.state.loaded ? this.props.src : this.state.placeholder;
+    const style = this.state.loaded ? {
+      animationName: 'gracefulimage',
+      animationDuration: '0.3s',
+      animationIterationCount: 1,
+      animationTimingFunction: 'ease-in',
+      background: 'red',
+    } : { background: this.props.placeholderColor };
 
-    if (this.state.loaded) {
-      return (
-        <img
-          src={this.props.src}
-          className={this.props.className}
-          width={this.props.width}
-          height={this.props.height}
-          style={{
-            animationName: 'gracefulimage',
-            animationDuration: '0.3s',
-            animationIterationCount: 1,
-            animationTimingFunction: 'ease-in',
-            ...this.props.style
-          }}
-          alt={this.props.alt}
-        />
-      );
-    }
+    return (
+      <img
+        src={src}
+        className={this.props.className}
+        width={this.props.width}
+        height={this.props.height}
+        style={{
+          ...style,
+          ...this.props.style
+        }}
+        alt={this.props.alt}
+        ref={this.state.loaded ? null : (ref) => this.placeholderImage = ref}
+      />
+    );
   }
 }
 
