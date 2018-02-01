@@ -179,7 +179,6 @@ class GracefulImage extends Component {
       animationDuration: '0.3s',
       animationIterationCount: 1,
       animationTimingFunction: 'ease-in',
-      background: 'red',
     } : { background: this.props.placeholderColor };
 
     return (
