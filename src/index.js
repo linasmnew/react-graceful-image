@@ -43,7 +43,7 @@ class GracefulImage extends Component {
     }
 
     // store a reference to the throttled function
-    this.throttledFunction = throttle(this.lazyLoad, 100);
+    this.throttledFunction = throttle(this.lazyLoad, 150);
 
     this.state = {
       loaded: false,
