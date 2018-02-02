@@ -11,7 +11,7 @@ function registerListener(event, func) {
 }
 
 function isInViewport(el) {
-	var rect = el.getBoundingClientRect();
+	const rect = el.getBoundingClientRect();
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
