@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import throttle from 'lodash.throttle';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import throttle from "lodash.throttle";
 
 function registerListener(event, func) {
   if (window.addEventListener) {
     window.addEventListener(event, func);
   } else {
-    window.attachEvent('on' + event, func);
+    window.attachEvent("on" + event, func);
   }
 }
 
 function isInViewport(el) {
-	const rect = el.getBoundingClientRect();
+  const rect = el.getBoundingClientRect();
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
@@ -28,7 +28,10 @@ const fadeIn = `
   }
 `;
 
-const IS_SVG_SUPPORTED =  document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Image", "1.1");
+const IS_SVG_SUPPORTED = document.implementation.hasFeature(
+  "http://www.w3.org/TR/SVG11/feature#Image",
+  "1.1"
+);
 
 class GracefulImage extends Component {
   constructor(props) {
@@ -36,10 +39,19 @@ class GracefulImage extends Component {
     let placeholder = null;
 
     if (IS_SVG_SUPPORTED) {
-      const width = (this.props.style && this.props.style.width) ? this.props.style.width : this.props.width ? this.props.width : '200';
-      const height = (this.props.style && this.props.style.height) ? this.props.style.height : this.props.height ? this.props.height : '150';
-      placeholder = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'{{w}}' height%3D'{{h}}' viewBox%3D'0 0 {{w}} {{h}}'%2F%3E";
-      placeholder = placeholder.replace(/{{w}}/g, width).replace(/{{h}}/g, height);
+      const width =
+        this.props.style && this.props.style.width
+          ? this.props.style.width
+          : this.props.width ? this.props.width : "200";
+      const height =
+        this.props.style && this.props.style.height
+          ? this.props.style.height
+          : this.props.height ? this.props.height : "150";
+      placeholder =
+        "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'{{w}}' height%3D'{{h}}' viewBox%3D'0 0 {{w}} {{h}}'%2F%3E";
+      placeholder = placeholder
+        .replace(/{{w}}/g, width)
+        .replace(/{{h}}/g, height);
     }
 
     // store a reference to the throttled function
@@ -49,25 +61,23 @@ class GracefulImage extends Component {
       loaded: false,
       retryDelay: this.props.retry.delay,
       retryCount: 1,
-      placeholder: placeholder,
+      placeholder: placeholder
     };
   }
-
 
   /*
     Creating a stylesheet to hold the fading animation
   */
   componentWillMount() {
-    const exists = document.head.querySelectorAll('[data-gracefulimage]');
+    const exists = document.head.querySelectorAll("[data-gracefulimage]");
 
     if (!exists.length) {
-      const styleElement = document.createElement('style');
-      styleElement.setAttribute('data-gracefulimage', 'exists');
+      const styleElement = document.createElement("style");
+      styleElement.setAttribute("data-gracefulimage", "exists");
       document.head.appendChild(styleElement);
       styleElement.sheet.insertRule(fadeIn, styleElement.sheet.cssRules.length);
     }
   }
-
 
   /*
     Attempts to download an image, and tracks its success / failure
@@ -76,13 +86,12 @@ class GracefulImage extends Component {
     const image = new Image();
     image.onload = () => {
       this.setState({ loaded: true });
-    }
+    };
     image.onerror = () => {
       this.handleImageRetries(image);
-    }
+    };
     image.src = this.props.src;
   }
-
 
   /*
     If placeholder is currently within the viewport then load the actual image
@@ -93,8 +102,7 @@ class GracefulImage extends Component {
       this.clearEventListeners();
       this.loadImage();
     }
-  }
-
+  };
 
   /*
     Attempts to load an image src passed via props
@@ -102,23 +110,21 @@ class GracefulImage extends Component {
   */
   componentDidMount() {
     if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
-      registerListener('load', this.throttledFunction);
-      registerListener('scroll', this.throttledFunction);
-      registerListener('resize', this.throttledFunction);
-      registerListener('gestureend', this.throttledFunction); // to detect pinch on mobile devices
+      registerListener("load", this.throttledFunction);
+      registerListener("scroll", this.throttledFunction);
+      registerListener("resize", this.throttledFunction);
+      registerListener("gestureend", this.throttledFunction); // to detect pinch on mobile devices
     } else {
       this.loadImage();
     }
   }
 
-
   clearEventListeners() {
-    window.removeEventListener('load', this.throttledFunction);
-    window.removeEventListener('scroll', this.throttledFunction);
-    window.removeEventListener('resize', this.throttledFunction);
-    window.removeEventListener('gestureend', this.throttledFunction);
+    window.removeEventListener("load", this.throttledFunction);
+    window.removeEventListener("scroll", this.throttledFunction);
+    window.removeEventListener("resize", this.throttledFunction);
+    window.removeEventListener("gestureend", this.throttledFunction);
   }
-
 
   /*
     Clear timeout incase retry is still running
@@ -131,31 +137,28 @@ class GracefulImage extends Component {
     this.clearEventListeners();
   }
 
-
   /*
     Handles the actual re-attempts of loading the image
     following the default / provided retry algorithm
   */
   handleImageRetries(image) {
     this.setState({ loaded: false }, () => {
-
       if (this.state.retryCount <= this.props.retry.count) {
-
         this.timeout = setTimeout(() => {
           // re-attempt fetching the image
           image.src = this.props.src;
 
           // update count and delay
-          this.setState((prevState) => {
+          this.setState(prevState => {
             let updateDelay;
-            if (this.props.retry.accumulate === 'multiply') {
+            if (this.props.retry.accumulate === "multiply") {
               updateDelay = prevState.retryDelay * this.props.retry.delay;
-            } else if (this.props.retry.accumulate === 'add') {
+            } else if (this.props.retry.accumulate === "add") {
               updateDelay = prevState.retryDelay + this.props.retry.delay;
-            } else if (this.props.retry.accumulate === 'noop') {
+            } else if (this.props.retry.accumulate === "noop") {
               updateDelay = this.props.retry.delay;
             } else {
-              updateDelay = 'multiply';
+              updateDelay = "multiply";
             }
 
             return {
@@ -165,7 +168,6 @@ class GracefulImage extends Component {
           });
         }, this.state.retryDelay * 1000);
       }
-
     });
   }
 
@@ -175,15 +177,18 @@ class GracefulImage extends Component {
     - Else render the placeholder
   */
   render() {
-    if (!this.state.loaded && (this.props.noPlaceholder || !IS_SVG_SUPPORTED)) return null;
+    if (!this.state.loaded && (this.props.noPlaceholder || !IS_SVG_SUPPORTED))
+      return null;
 
     const src = this.state.loaded ? this.props.src : this.state.placeholder;
-    const style = this.state.loaded ? {
-      animationName: 'gracefulimage',
-      animationDuration: '0.3s',
-      animationIterationCount: 1,
-      animationTimingFunction: 'ease-in',
-    } : { background: this.props.placeholderColor };
+    const style = this.state.loaded
+      ? {
+          animationName: "gracefulimage",
+          animationDuration: "0.3s",
+          animationIterationCount: 1,
+          animationTimingFunction: "ease-in"
+        }
+      : { background: this.props.placeholderColor };
 
     return (
       <img
@@ -196,53 +201,46 @@ class GracefulImage extends Component {
           ...this.props.style
         }}
         alt={this.props.alt}
-        ref={this.state.loaded ? null : (ref) => this.placeholderImage = ref}
+        ref={this.state.loaded ? null : ref => (this.placeholderImage = ref)}
       />
     );
   }
 }
-
 
 GracefulImage.defaultProps = {
   src: null,
   className: null,
   width: null,
   height: null,
-  alt: 'Broken image placeholder',
+  alt: "Broken image placeholder",
   style: {},
-  placeholderColor: '#eee',
+  placeholderColor: "#eee",
   retry: {
     count: 8,
     delay: 2,
-    accumulate: 'multiply'
+    accumulate: "multiply"
   },
   noRetry: false,
   noPlaceholder: false,
-  noLazyLoad: false,
+  noLazyLoad: false
 };
 
 GracefulImage.propTypes = {
   src: PropTypes.string.isRequired,
   className: PropTypes.string,
-  width: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ]),
-  height: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ]),
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   alt: PropTypes.string,
   style: PropTypes.object,
   placeholderColor: PropTypes.string,
   retry: PropTypes.shape({
     count: PropTypes.number,
     delay: PropTypes.number,
-    accumulate: PropTypes.string,
+    accumulate: PropTypes.string
   }),
   noRetry: PropTypes.bool,
   noPlaceholder: PropTypes.bool,
-  noLazyLoad: PropTypes.bool,
+  noLazyLoad: PropTypes.bool
 };
 
 export default GracefulImage;

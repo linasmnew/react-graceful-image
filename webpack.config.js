@@ -1,22 +1,22 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-  entry:  './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'lib'),
-    filename: 'index.js',
-    libraryTarget: 'umd',
+    path: path.resolve(__dirname, "lib"),
+    filename: "index.js",
+    libraryTarget: "umd"
   },
   module: {
     rules: [
       {
         test: /\.(js)$/,
-        loader: 'babel-loader'
+        loader: "babel-loader"
       }
     ]
   },
   externals: {
-    'react': 'umd react',
-    'react-dom': 'umd react-dom',
+    react: "umd react",
+    "react-dom": "umd react-dom"
   }
 };

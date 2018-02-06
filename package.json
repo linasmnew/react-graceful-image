@@ -1,7 +1,8 @@
 {
   "name": "react-graceful-image",
   "version": "1.2.5",
-  "description": "An image component for gracefully dealing with images errors by providing a placeholder and retries on failure",
+  "description":
+    "An image component for gracefully dealing with images errors by providing a placeholder and retries on failure",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
@@ -41,10 +42,5 @@
     "react": ">=15.0.0",
     "react-dom": ">=15.0.0"
   },
-  "keywords": [
-    "react",
-    "react-component",
-    "react-image",
-    "react-placeholder"
-  ]
+  "keywords": ["react", "react-component", "react-image", "react-placeholder"]
 }
