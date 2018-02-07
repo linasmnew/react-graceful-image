@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
 
-function registerListener(event, func) {
+function registerListener(event, fn) {
   if (window.addEventListener) {
-    window.addEventListener(event, func);
+    window.addEventListener(event, fn);
   } else {
-    window.attachEvent("on" + event, func);
+    window.attachEvent("on" + event, fn);
   }
 }
 
