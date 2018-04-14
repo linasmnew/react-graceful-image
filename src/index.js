@@ -68,7 +68,7 @@ class GracefulImage extends Component {
   /*
     Creating a stylesheet to hold the fading animation
   */
-  componentWillMount() {
+  addAnimationStyles() {
     const exists = document.head.querySelectorAll("[data-gracefulimage]");
 
     if (!exists.length) {
@@ -109,6 +109,8 @@ class GracefulImage extends Component {
     and utilises image events to track sccess / failure of the loading
   */
   componentDidMount() {
+    this.addAnimationStyles();
+
     if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
       registerListener("load", this.throttledFunction);
       registerListener("scroll", this.throttledFunction);
