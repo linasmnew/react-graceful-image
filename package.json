@@ -1,6 +1,6 @@
 {
   "name": "react-graceful-image",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "An image component for gracefully dealing with images errors by providing a placeholder and retries on failure",
   "main": "lib/index.js",
   "scripts": {
