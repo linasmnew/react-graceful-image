@@ -111,11 +111,17 @@ class GracefulImage extends Component {
   componentDidMount() {
     this.addAnimationStyles();
 
+    // if user wants to lazy load
     if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
-      registerListener("load", this.throttledFunction);
-      registerListener("scroll", this.throttledFunction);
-      registerListener("resize", this.throttledFunction);
-      registerListener("gestureend", this.throttledFunction); // to detect pinch on mobile devices
+      // check if already within viewport to avoid attaching listeners
+      if (isInViewport(this.placeholderImage) {
+        this.loadImage();
+      } else {
+        registerListener("load", this.throttledFunction);
+        registerListener("scroll", this.throttledFunction);
+        registerListener("resize", this.throttledFunction);
+        registerListener("gestureend", this.throttledFunction); // to detect pinch on mobile devices
+      }
     } else {
       this.loadImage();
     }
