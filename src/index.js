@@ -114,7 +114,7 @@ class GracefulImage extends Component {
     // if user wants to lazy load
     if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
       // check if already within viewport to avoid attaching listeners
-      if (isInViewport(this.placeholderImage) {
+      if (isInViewport(this.placeholderImage)) {
         this.loadImage();
       } else {
         registerListener("load", this.throttledFunction);
