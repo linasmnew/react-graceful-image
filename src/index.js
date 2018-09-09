@@ -128,6 +128,7 @@ class GracefulImage extends Component {
   }
 
   clearEventListeners() {
+    this.throttledFunction.cancel();
     window.removeEventListener("load", this.throttledFunction);
     window.removeEventListener("scroll", this.throttledFunction);
     window.removeEventListener("resize", this.throttledFunction);
