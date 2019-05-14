@@ -11,6 +11,7 @@ function registerListener(event, fn) {
 }
 
 function isInViewport(el) {
+  if (!el) return false
   const rect = el.getBoundingClientRect();
   return (
     rect.top >= 0 &&
@@ -36,6 +37,7 @@ const IS_SVG_SUPPORTED = document.implementation.hasFeature(
 class GracefulImage extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false;
     let placeholder = null;
 
     if (IS_SVG_SUPPORTED) {
@@ -79,13 +81,22 @@ class GracefulImage extends Component {
     }
   }
 
+   /*
+    Marks an image as loaded
+   */
+  setLoaded() {
+    if (this._isMounted) {
+      this.setState({ loaded: true });
+    }
+  }
+
   /*
     Attempts to download an image, and tracks its success / failure
   */
   loadImage() {
     const image = new Image();
     image.onload = () => {
-      this.setState({ loaded: true });
+      this.setLoaded();
     };
     image.onerror = () => {
       this.handleImageRetries(image);
@@ -109,6 +120,7 @@ class GracefulImage extends Component {
     and utilises image events to track sccess / failure of the loading
   */
   componentDidMount() {
+    this._isMounted = true;
     this.addAnimationStyles();
 
     // if user wants to lazy load
@@ -128,6 +140,7 @@ class GracefulImage extends Component {
   }
 
   clearEventListeners() {
+    this.throttledFunction.cancel();
     window.removeEventListener("load", this.throttledFunction);
     window.removeEventListener("scroll", this.throttledFunction);
     window.removeEventListener("resize", this.throttledFunction);
@@ -139,6 +152,7 @@ class GracefulImage extends Component {
     And clear any existing event listeners
   */
   componentWillUnmount() {
+    this._isMounted = false;
     if (this.timeout) {
       window.clearTimeout(this.timeout);
     }
@@ -150,9 +164,18 @@ class GracefulImage extends Component {
     following the default / provided retry algorithm
   */
   handleImageRetries(image) {
+    // if we are not mounted anymore, we do not care, and we can bail
+    if (!this._isMounted) {
+      return;
+    }
+  
     this.setState({ loaded: false }, () => {
       if (this.state.retryCount <= this.props.retry.count) {
         this.timeout = setTimeout(() => {
+          // if we are not mounted anymore, we do not care, and we can bail
+          if (!this._isMounted) {
+            return;
+          }
           // re-attempt fetching the image
           image.src = this.props.src;
 
