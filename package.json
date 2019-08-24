@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "build": "webpack",
+    "build": "webpack --mode production",
     "start": "webpack-dev-server --open"
   },
   "repository": {
@@ -35,7 +35,8 @@
     "jest": "^22.1.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "webpack": "^3.10.0"
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
   },
   "peerDependencies": {
     "react": ">=15.0.0",
