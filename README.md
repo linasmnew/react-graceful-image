@@ -64,6 +64,7 @@ class YourComponent extends Component {
 | Prop                   | Description                                                                      | Default                                          | Type     |
 | ---------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ | -------- |
 | **`src`**              | Image url / path                                                                 | _None_                                           | _string_ |
+| **`srcSet`**           | One or more Image urls / paths and their sizes                                   | _None_                                           | _string_ |
 | **`width`**            | Image width                                                                      | _None_                                           | _string_ |
 | **`height`**           | Image height                                                                     | _None_                                           | _string_ |
 | **`className`**        | Image class name                                                                 | _None_                                           | _string_ |
@@ -79,15 +80,15 @@ class YourComponent extends Component {
 
 You can modify the default retry algorithm by supplying a `retry` prop consisting of 3 properties: `count`, `delay` and `accumulate`:
 
-* `count` specifies the number of times you want to retry
-* `delay` specifies the delay between retries (in seconds)
-* `accumulate` specifies how the delay should increase with each retry, **_possible values:_** `"multiply"` (default), `"add"` or `false` (false can also be represented by simply omitting this property)
+- `count` specifies the number of times you want to retry
+- `delay` specifies the delay between retries (in seconds)
+- `accumulate` specifies how the delay should increase with each retry, **_possible values:_** `"multiply"` (default), `"add"` or `false` (false can also be represented by simply omitting this property)
 
 #### Accumulate
 
-* `accumulate: "multiply"` will multiply delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 8 seconds, 4th retry will be in 16 seconds etc.
-* `accumulate: "add"` will increment delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 6 seconds, 4th retry will be in 8 seconds, etc.
-* `accumulate: "false"` will keep the delay constant between retries, i.e. if `delay: 2` is given then retry will run every 2 seconds
+- `accumulate: "multiply"` will multiply delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 8 seconds, 4th retry will be in 16 seconds etc.
+- `accumulate: "add"` will increment delay after each retry by the given `delay` value, i.e. if `delay: 2` is given then 1st retry will be in 2 seconds, 2nd retry will be in 4 seconds, 3rd retry will be in 6 seconds, 4th retry will be in 8 seconds, etc.
+- `accumulate: "false"` will keep the delay constant between retries, i.e. if `delay: 2` is given then retry will run every 2 seconds
 
 ### Examples
 

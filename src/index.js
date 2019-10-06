@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import throttle from "lodash.throttle";
 
 function registerListener(event, fn) {
@@ -224,6 +223,7 @@ class GracefulImage extends Component {
     return (
       <img
         src={src}
+        srcSet={this.props.srcSet}
         className={this.props.className}
         width={this.props.width}
         height={this.props.height}
@@ -232,19 +232,13 @@ class GracefulImage extends Component {
           ...this.props.style
         }}
         alt={this.props.alt}
-        ref={this.state.loaded ? null : ref => (this.placeholderImage = ref)}
+        ref={ref => (this.placeholderImage = ref)}
       />
     );
   }
 }
 
 GracefulImage.defaultProps = {
-  src: null,
-  className: null,
-  width: null,
-  height: null,
-  alt: "Broken image placeholder",
-  style: {},
   placeholderColor: "#eee",
   retry: {
     count: 8,
@@ -254,24 +248,6 @@ GracefulImage.defaultProps = {
   noRetry: false,
   noPlaceholder: false,
   noLazyLoad: false
-};
-
-GracefulImage.propTypes = {
-  src: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  alt: PropTypes.string,
-  style: PropTypes.object,
-  placeholderColor: PropTypes.string,
-  retry: PropTypes.shape({
-    count: PropTypes.number,
-    delay: PropTypes.number,
-    accumulate: PropTypes.string
-  }),
-  noRetry: PropTypes.bool,
-  noPlaceholder: PropTypes.bool,
-  noLazyLoad: PropTypes.bool
 };
 
 export default GracefulImage;
