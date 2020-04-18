@@ -168,6 +168,11 @@ class GracefulImage extends Component {
       return;
     }
 
+    // if we are not supposed to retry on error, we can bail
+    if (this.props.noRetry) {
+      return;
+    }
+
     this.setState({ loaded: false }, () => {
       if (this.state.retryCount <= this.props.retry.count) {
         this.timeout = setTimeout(() => {
