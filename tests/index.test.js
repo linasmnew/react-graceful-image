@@ -29,12 +29,12 @@ describe("react-graceful-image", () => {
       .replace(/{{w}}/g, props.width)
       .replace(/{{h}}/g, props.height);
 
-    const shallowWrapper = shallow(<GracefulImage {...props} />);
+    const mountWrapper = mount(<GracefulImage {...props} />);
 
-    expect(shallowWrapper.find("img").length).toBe(1);
-    expect(shallowWrapper.find("img").prop("src")).toEqual(placeholder);
-    expect(shallowWrapper.find("img").prop("width")).toEqual(props.width);
-    expect(shallowWrapper.find("img").prop("height")).toEqual(props.height);
+    expect(mountWrapper.find("img").length).toBe(1);
+    expect(mountWrapper.find("img").prop("src")).toEqual(placeholder);
+    expect(mountWrapper.find("img").prop("width")).toEqual(props.width);
+    expect(mountWrapper.find("img").prop("height")).toEqual(props.height);
   });
 
   it("should render image when image has loaded", () => {
@@ -43,13 +43,13 @@ describe("react-graceful-image", () => {
       width: "150",
       height: "150"
     };
-    const shallowWrapper = shallow(<GracefulImage {...props} />);
-    shallowWrapper.setState({ loaded: true });
+    const mountWrapper = mount(<GracefulImage {...props} />);
+    mountWrapper.setState({ loaded: true });
 
-    expect(shallowWrapper.find("img").length).toBe(1);
-    expect(shallowWrapper.find("img").prop("src")).toEqual(props.src);
-    expect(shallowWrapper.find("img").prop("width")).toEqual(props.width);
-    expect(shallowWrapper.find("img").prop("height")).toEqual(props.height);
+    expect(mountWrapper.find("img").length).toBe(1);
+    expect(mountWrapper.find("img").prop("src")).toEqual(props.src);
+    expect(mountWrapper.find("img").prop("width")).toEqual(props.width);
+    expect(mountWrapper.find("img").prop("height")).toEqual(props.height);
   });
 
   it("should not render anything when given noPlaceholder prop until image has loaded", () => {
@@ -59,11 +59,11 @@ describe("react-graceful-image", () => {
       height: "150",
       noPlaceholder: true
     };
-    const shallowWrapper = shallow(<GracefulImage {...props} />);
-    expect(shallowWrapper.find("img").length).toBe(0);
+    const mountWrapper = mount(<GracefulImage {...props} />);
+    expect(mountWrapper.find("img").length).toBe(0);
 
-    shallowWrapper.setState({ loaded: true });
-    expect(shallowWrapper.find("img").length).toBe(1);
+    mountWrapper.setState({ loaded: true });
+    expect(mountWrapper.find("img").length).toBe(1);
   });
 
   it("should change placeholder's color", () => {
@@ -73,9 +73,9 @@ describe("react-graceful-image", () => {
       height: "150",
       placeholderColor: "#aaa"
     };
-    const shallowWrapper = shallow(<GracefulImage {...props} />);
+    const mountWrapper = mount(<GracefulImage {...props} />);
 
-    expect(shallowWrapper.find("img").prop("style")).toHaveProperty(
+    expect(mountWrapper.find("img").prop("style")).toHaveProperty(
       "background",
       props.placeholderColor
     );
@@ -88,11 +88,11 @@ describe("react-graceful-image", () => {
       height: "150",
       alt: "hello world"
     };
-    const shallowWrapper = shallow(<GracefulImage {...props} />);
-    expect(shallowWrapper.find("img").prop("alt")).toEqual(props.alt);
+    const mountWrapper = mount(<GracefulImage {...props} />);
+    expect(mountWrapper.find("img").prop("alt")).toEqual(props.alt);
 
-    shallowWrapper.setState({ loaded: true });
-    expect(shallowWrapper.find("img").prop("alt")).toEqual(props.alt);
+    mountWrapper.setState({ loaded: true });
+    expect(mountWrapper.find("img").prop("alt")).toEqual(props.alt);
   });
 
   it("should apply className to placeholder image and loaded image", () => {
@@ -102,13 +102,13 @@ describe("react-graceful-image", () => {
       height: "150",
       className: "graceful_image"
     };
-    const shallowWrapper = shallow(<GracefulImage {...props} />);
-    expect(shallowWrapper.find("img").prop("className")).toEqual(
+    const mountWrapper = mount(<GracefulImage {...props} />);
+    expect(mountWrapper.find("img").prop("className")).toEqual(
       props.className
     );
 
-    shallowWrapper.setState({ loaded: true });
-    expect(shallowWrapper.find("img").prop("className")).toEqual(
+    mountWrapper.setState({ loaded: true });
+    expect(mountWrapper.find("img").prop("className")).toEqual(
       props.className
     );
   });
@@ -120,7 +120,7 @@ describe("react-graceful-image", () => {
       height: "150"
     };
     const spy = jest.spyOn(window, "addEventListener");
-    const component = shallow(<GracefulImage {...props} />);
+    shallow(<GracefulImage {...props} />);
 
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledTimes(4);
@@ -139,7 +139,7 @@ describe("react-graceful-image", () => {
       noLazyLoad: true
     };
     const spy = jest.spyOn(window, "addEventListener");
-    const component = shallow(<GracefulImage {...props} />);
+    shallow(<GracefulImage {...props} />);
 
     expect(spy).toHaveBeenCalledTimes(0);
     spy.mockClear();
