@@ -181,7 +181,7 @@ class GracefulImage extends Component {
   }
 
   /*
-    - If image hasn't yet loaded AND user didn't want a placeholder OR SVG not supported then don't render anything
+    - If image hasn't yet loaded AND user didn't want a placeholder then don't render anything
     - Else if image has loaded then render the image
     - Else render the placeholder
   */
