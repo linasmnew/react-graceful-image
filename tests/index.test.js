@@ -6,8 +6,8 @@ import GracefulImage from "../src";
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe("react-graceful-image", () => {
-  it("should render without error", () => {
+describe("react-graceful-image client", () => {
+  it("should render without errors", () => {
     const props = {
       src: "https://linasmickevicius.com/images/browser.png",
       width: "150",

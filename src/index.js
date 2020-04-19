@@ -28,18 +28,13 @@ const fadeIn = `
   }
 `;
 
-const IS_SVG_SUPPORTED = document.implementation.hasFeature(
-  "http://www.w3.org/TR/SVG11/feature#Image",
-  "1.1"
-);
-
 class GracefulImage extends Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
     let placeholder = null;
 
-    if (IS_SVG_SUPPORTED) {
+    if (!this.props.noPlaceholder) {
       const width =
         this.props.style && this.props.style.width
           ? this.props.style.width
@@ -123,7 +118,7 @@ class GracefulImage extends Component {
     this.addAnimationStyles();
 
     // if user wants to lazy load
-    if (!this.props.noLazyLoad && IS_SVG_SUPPORTED) {
+    if (!this.props.noLazyLoad) {
       // check if already within viewport to avoid attaching listeners
       if (isInViewport(this.placeholderImage)) {
         this.loadImage();
@@ -208,7 +203,7 @@ class GracefulImage extends Component {
     - Else render the placeholder
   */
   render() {
-    if (!this.state.loaded && (this.props.noPlaceholder || !IS_SVG_SUPPORTED))
+    if (!this.state.loaded && this.props.noPlaceholder)
       return null;
 
     const src = this.state.loaded ? this.props.src : this.state.placeholder;
