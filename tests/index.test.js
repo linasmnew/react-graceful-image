@@ -23,16 +23,10 @@ describe("react-graceful-image client", () => {
       width: "150",
       height: "150"
     };
-    let placeholder =
-      "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' width%3D'{{w}}' height%3D'{{h}}' viewBox%3D'0 0 {{w}} {{h}}'%2F%3E";
-    placeholder = placeholder
-      .replace(/{{w}}/g, props.width)
-      .replace(/{{h}}/g, props.height);
-
     const mountWrapper = mount(<GracefulImage {...props} />);
 
     expect(mountWrapper.find("img").length).toBe(1);
-    expect(mountWrapper.find("img").prop("src")).toEqual(placeholder);
+    expect(mountWrapper.find("img").prop("src")).toEqual("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
     expect(mountWrapper.find("img").prop("width")).toEqual(props.width);
     expect(mountWrapper.find("img").prop("height")).toEqual(props.height);
   });
