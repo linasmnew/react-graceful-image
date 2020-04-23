@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import throttle from "lodash.throttle";
+import React, { Component } from 'react'
+import throttle from 'lodash.throttle'
 
-function registerListener(event, fn) {
-  if (window.addEventListener) {
-    window.addEventListener(event, fn);
-  } else {
-    window.attachEvent("on" + event, fn);
-  }
+function registerListener (event, fn) {
+    if (window.addEventListener) {
+        window.addEventListener(event, fn)
+    } else {
+        window.attachEvent('on' + event, fn)
+    }
 }
 
-function isInViewport(el) {
-  if (!el) return false;
-  const rect = el.getBoundingClientRect();
-  return (
-    rect.top >= 0 &&
+function isInViewport (el) {
+    if (!el) return false
+    const rect = el.getBoundingClientRect()
+    return (
+        rect.top >= 0 &&
     rect.left >= 0 &&
     rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
     rect.left <= (window.innerWidth || document.documentElement.clientWidth)
-  );
+    )
 }
 
 const fadeIn = `
@@ -26,158 +26,158 @@ const fadeIn = `
     50%  { opacity: 0.5; }
     100% { opacity: 1; }
   }
-`;
+`
 
 class GracefulImage extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
+    constructor (props) {
+        super(props)
+        this._isMounted = false
 
-    // store a reference to the throttled function
-    this.throttledFunction = throttle(this.lazyLoad, 150);
+        // store a reference to the throttled function
+        this.throttledFunction = throttle(this.lazyLoad, 150)
 
-    this.state = {
-      loaded: false,
-      retryDelay: this.props.retry.delay,
-      retryCount: 1,
-      placeholder: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-    };
-  }
+        this.state = {
+            loaded: false,
+            retryDelay: this.props.retry.delay,
+            retryCount: 1,
+            placeholder: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+        }
+    }
 
-  /*
+    /*
     Creating a stylesheet to hold the fading animation
   */
-  addAnimationStyles() {
-    const exists = document.head.querySelectorAll("[data-gracefulimage]");
+    addAnimationStyles () {
+        const exists = document.head.querySelectorAll('[data-gracefulimage]')
 
-    if (!exists.length) {
-      const styleElement = document.createElement("style");
-      styleElement.setAttribute("data-gracefulimage", "exists");
-      document.head.appendChild(styleElement);
-      styleElement.sheet.insertRule(fadeIn, styleElement.sheet.cssRules.length);
+        if (!exists.length) {
+            const styleElement = document.createElement('style')
+            styleElement.setAttribute('data-gracefulimage', 'exists')
+            document.head.appendChild(styleElement)
+            styleElement.sheet.insertRule(fadeIn, styleElement.sheet.cssRules.length)
+        }
     }
-  }
 
-  /*
+    /*
     Marks an image as loaded
    */
-  setLoaded() {
-    if (this._isMounted) {
-      this.setState({ loaded: true });
+    setLoaded () {
+        if (this._isMounted) {
+            this.setState({ loaded: true })
+        }
     }
-  }
 
-  /*
+    /*
     Attempts to download an image, and tracks its success / failure
   */
-  loadImage() {
-    const image = new Image();
-    image.onload = () => {
-      this.setLoaded();
-    };
-    image.onerror = () => {
-      this.handleImageRetries(image);
-    };
-    image.src = this.props.src;
-  }
+    loadImage () {
+        const image = new Image()
+        image.onload = () => {
+            this.setLoaded()
+        }
+        image.onerror = () => {
+            this.handleImageRetries(image)
+        }
+        image.src = this.props.src
+    }
 
   /*
     If placeholder is currently within the viewport then load the actual image
     and remove all event listeners associated with it
   */
   lazyLoad = () => {
-    if (isInViewport(this.placeholderImage)) {
-      this.clearEventListeners();
-      this.loadImage();
-    }
+      if (isInViewport(this.placeholderImage)) {
+          this.clearEventListeners()
+          this.loadImage()
+      }
   };
 
   /*
     Attempts to load an image src passed via props
     and utilises image events to track sccess / failure of the loading
   */
-  componentDidMount() {
-    this._isMounted = true;
-    this.addAnimationStyles();
+  componentDidMount () {
+      this._isMounted = true
+      this.addAnimationStyles()
 
-    // if user wants to lazy load
-    if (!this.props.noLazyLoad) {
+      // if user wants to lazy load
+      if (!this.props.noLazyLoad) {
       // check if already within viewport to avoid attaching listeners
-      if (isInViewport(this.placeholderImage)) {
-        this.loadImage();
+          if (isInViewport(this.placeholderImage)) {
+              this.loadImage()
+          } else {
+              registerListener('load', this.throttledFunction)
+              registerListener('scroll', this.throttledFunction)
+              registerListener('resize', this.throttledFunction)
+              registerListener('gestureend', this.throttledFunction) // to detect pinch on mobile devices
+          }
       } else {
-        registerListener("load", this.throttledFunction);
-        registerListener("scroll", this.throttledFunction);
-        registerListener("resize", this.throttledFunction);
-        registerListener("gestureend", this.throttledFunction); // to detect pinch on mobile devices
+          this.loadImage()
       }
-    } else {
-      this.loadImage();
-    }
   }
 
-  clearEventListeners() {
-    this.throttledFunction.cancel();
-    window.removeEventListener("load", this.throttledFunction);
-    window.removeEventListener("scroll", this.throttledFunction);
-    window.removeEventListener("resize", this.throttledFunction);
-    window.removeEventListener("gestureend", this.throttledFunction);
+  clearEventListeners () {
+      this.throttledFunction.cancel()
+      window.removeEventListener('load', this.throttledFunction)
+      window.removeEventListener('scroll', this.throttledFunction)
+      window.removeEventListener('resize', this.throttledFunction)
+      window.removeEventListener('gestureend', this.throttledFunction)
   }
 
   /*
     Clear timeout incase retry is still running
     And clear any existing event listeners
   */
-  componentWillUnmount() {
-    this._isMounted = false;
-    if (this.timeout) {
-      window.clearTimeout(this.timeout);
-    }
-    this.clearEventListeners();
+  componentWillUnmount () {
+      this._isMounted = false
+      if (this.timeout) {
+          window.clearTimeout(this.timeout)
+      }
+      this.clearEventListeners()
   }
 
   /*
     Handles the actual re-attempts of loading the image
     following the default / provided retry algorithm
   */
-  handleImageRetries(image) {
-    // if we are not mounted anymore, we do not care, and we can bail
-    if (!this._isMounted) {
-      return;
-    }
-
-    this.setState({ loaded: false }, () => {
-      if (this.state.retryCount <= this.props.retry.count) {
-        this.timeout = setTimeout(() => {
-          // if we are not mounted anymore, we do not care, and we can bail
-          if (!this._isMounted) {
-            return;
-          }
-
-          // re-attempt fetching the image
-          image.src = this.props.src;
-
-          // update count and delay
-          this.setState(prevState => {
-            let updateDelay;
-            if (this.props.retry.accumulate === "multiply") {
-              updateDelay = prevState.retryDelay * this.props.retry.delay;
-            } else if (this.props.retry.accumulate === "add") {
-              updateDelay = prevState.retryDelay + this.props.retry.delay;
-            } else if (this.props.retry.accumulate === "noop") {
-              updateDelay = this.props.retry.delay;
-            } else {
-              updateDelay = "multiply";
-            }
-
-            return {
-              retryDelay: updateDelay,
-              retryCount: prevState.retryCount + 1
-            };
-          });
-        }, this.state.retryDelay * 1000);
+  handleImageRetries (image) {
+      // if we are not mounted anymore, we do not care, and we can bail
+      if (!this._isMounted) {
+          return
       }
-    });
+
+      this.setState({ loaded: false }, () => {
+          if (this.state.retryCount <= this.props.retry.count) {
+              this.timeout = setTimeout(() => {
+                  // if we are not mounted anymore, we do not care, and we can bail
+                  if (!this._isMounted) {
+                      return
+                  }
+
+                  // re-attempt fetching the image
+                  image.src = this.props.src
+
+                  // update count and delay
+                  this.setState(prevState => {
+                      let updateDelay
+                      if (this.props.retry.accumulate === 'multiply') {
+                          updateDelay = prevState.retryDelay * this.props.retry.delay
+                      } else if (this.props.retry.accumulate === 'add') {
+                          updateDelay = prevState.retryDelay + this.props.retry.delay
+                      } else if (this.props.retry.accumulate === 'noop') {
+                          updateDelay = this.props.retry.delay
+                      } else {
+                          updateDelay = 'multiply'
+                      }
+
+                      return {
+                          retryDelay: updateDelay,
+                          retryCount: prevState.retryCount + 1
+                      }
+                  })
+              }, this.state.retryDelay * 1000)
+          }
+      })
   }
 
   /*
@@ -185,48 +185,47 @@ class GracefulImage extends Component {
     - Else if image has loaded then render the image
     - Else render the placeholder
   */
-  render() {
-    if (!this.state.loaded && this.props.noPlaceholder)
-      return null;
+  render () {
+      if (!this.state.loaded && this.props.noPlaceholder) { return null }
 
-    const src = this.state.loaded ? this.props.src : this.state.placeholder;
-    const style = this.state.loaded
-      ? {
-          animationName: "gracefulimage",
-          animationDuration: "0.3s",
-          animationIterationCount: 1,
-          animationTimingFunction: "ease-in"
-        }
-      : { background: this.props.placeholderColor };
+      const src = this.state.loaded ? this.props.src : this.state.placeholder
+      const style = this.state.loaded
+          ? {
+              animationName: 'gracefulimage',
+              animationDuration: '0.3s',
+              animationIterationCount: 1,
+              animationTimingFunction: 'ease-in'
+          }
+          : { background: this.props.placeholderColor }
 
-    return (
-      <img
-        src={src}
-        srcSet={this.props.srcSet}
-        className={this.props.className}
-        width={this.props.width}
-        height={this.props.height}
-        style={{
-          ...style,
-          ...this.props.style
-        }}
-        alt={this.props.alt}
-        ref={ref => (this.placeholderImage = ref)}
-      />
-    );
+      return (
+          <img
+              src={src}
+              srcSet={this.props.srcSet}
+              className={this.props.className}
+              width={this.props.width}
+              height={this.props.height}
+              style={{
+                  ...style,
+                  ...this.props.style
+              }}
+              alt={this.props.alt}
+              ref={ref => (this.placeholderImage = ref)}
+          />
+      )
   }
 }
 
 GracefulImage.defaultProps = {
-  placeholderColor: "#eee",
-  retry: {
-    count: 8,
-    delay: 2,
-    accumulate: "multiply"
-  },
-  noRetry: false,
-  noPlaceholder: false,
-  noLazyLoad: false
-};
+    placeholderColor: '#eee',
+    retry: {
+        count: 8,
+        delay: 2,
+        accumulate: 'multiply'
+    },
+    noRetry: false,
+    noPlaceholder: false,
+    noLazyLoad: false
+}
 
-export default GracefulImage;
+export default GracefulImage
