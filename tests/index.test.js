@@ -14,7 +14,7 @@ describe('react-graceful-image client', () => {
             height: '150'
         }
         const div = document.createElement('div')
-        ReactDOM.render(<GracefulImage {...props} />, div)
+        ReactDOM.render(<GracefulImage { ...props } />, div)
     })
 
     it('should render SVG placeholder when image has not loaded', () => {
@@ -23,7 +23,7 @@ describe('react-graceful-image client', () => {
             width: '150',
             height: '150'
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
 
         expect(mountWrapper.find('img').length).toBe(1)
         expect(mountWrapper.find('img').prop('src')).toEqual('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')
@@ -37,7 +37,7 @@ describe('react-graceful-image client', () => {
             width: '150',
             height: '150'
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
         mountWrapper.setState({ loaded: true })
 
         expect(mountWrapper.find('img').length).toBe(1)
@@ -53,7 +53,7 @@ describe('react-graceful-image client', () => {
             height: '150',
             noPlaceholder: true
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
         expect(mountWrapper.find('img').length).toBe(0)
 
         mountWrapper.setState({ loaded: true })
@@ -67,7 +67,7 @@ describe('react-graceful-image client', () => {
             height: '150',
             placeholderColor: '#aaa'
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
 
         expect(mountWrapper.find('img').prop('style')).toHaveProperty(
             'background',
@@ -82,7 +82,7 @@ describe('react-graceful-image client', () => {
             height: '150',
             alt: 'hello world'
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
         expect(mountWrapper.find('img').prop('alt')).toEqual(props.alt)
 
         mountWrapper.setState({ loaded: true })
@@ -96,7 +96,7 @@ describe('react-graceful-image client', () => {
             height: '150',
             className: 'graceful_image'
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
         expect(mountWrapper.find('img').prop('className')).toEqual(
             props.className
         )
@@ -114,7 +114,7 @@ describe('react-graceful-image client', () => {
             height: '150'
         }
         const spy = jest.spyOn(window, 'addEventListener')
-        shallow(<GracefulImage {...props} />)
+        shallow(<GracefulImage { ...props } />)
 
         expect(spy).toHaveBeenCalled()
         expect(spy).toHaveBeenCalledTimes(4)
@@ -133,13 +133,13 @@ describe('react-graceful-image client', () => {
             noLazyLoad: true
         }
         const spy = jest.spyOn(window, 'addEventListener')
-        shallow(<GracefulImage {...props} />)
+        shallow(<GracefulImage { ...props } />)
 
         expect(spy).toHaveBeenCalledTimes(0)
         spy.mockClear()
     })
 
-    it('should fire onLoad prop when image loads', (done) => {
+    it('should fire onLoad prop when image loads', done => {
         global.Image = class {
             constructor () {
                 setTimeout(() => {
@@ -155,11 +155,11 @@ describe('react-graceful-image client', () => {
             noLazyLoad: true,
             onLoad
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
+        const mountWrapper = mount(<GracefulImage { ...props } />)
         mountWrapper.setState({ loaded: true })
     })
 
-    it('should fire onError prop when image fails to load after reaching the retry limit', (done) => {
+    it('should fire onError prop when image fails to load after reaching the retry limit', done => {
         global.Image = class {
             constructor () {
                 setTimeout(() => {
@@ -175,7 +175,7 @@ describe('react-graceful-image client', () => {
             retry: { count: 0, delay: 1 },
             onError
         }
-        const mountWrapper = mount(<GracefulImage {...props} />)
-        mountWrapper.setState({ loaded: true })
+        const mountWrapper = mount(<GracefulImage { ...props } />)
+        mountWrapper.setState({ loaded: false })
     })
 })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import throttle from 'lodash.throttle'
 
-function registerListener (event, fn) {
+const registerListener = (event, fn) => {
     if (window.addEventListener) {
         window.addEventListener(event, fn)
     } else {
@@ -9,15 +9,15 @@ function registerListener (event, fn) {
     }
 }
 
-function isInViewport (el) {
-    if (!el) return false
-    const rect = el.getBoundingClientRect()
-    return (
-        rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.left <= (window.innerWidth || document.documentElement.clientWidth)
-    )
+const isInViewport = el => {
+    if (el) {
+        const rect = el.getBoundingClientRect()
+
+        return rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.left <= (window.innerWidth || document.documentElement.clientWidth)
+    }
 }
 
 const fadeIn = `
@@ -31,11 +31,9 @@ const fadeIn = `
 class GracefulImage extends Component {
     constructor (props) {
         super(props)
+
         this._isMounted = false
-
-        // store a reference to the throttled function
         this.throttledFunction = throttle(this.lazyLoad, 150)
-
         this.state = {
             loaded: false,
             retryDelay: this.props.retry.delay,
@@ -52,6 +50,7 @@ class GracefulImage extends Component {
 
         if (!exists.length) {
             const styleElement = document.createElement('style')
+
             styleElement.setAttribute('data-gracefulimage', 'exists')
             document.head.appendChild(styleElement)
             styleElement.sheet.insertRule(fadeIn, styleElement.sheet.cssRules.length)
@@ -72,6 +71,7 @@ class GracefulImage extends Component {
   */
     loadImage () {
         const image = new Image()
+
         image.onload = () => {
             this.setLoaded()
         }
@@ -102,7 +102,7 @@ class GracefulImage extends Component {
 
       // if user wants to lazy load
       if (!this.props.noLazyLoad) {
-      // check if already within viewport to avoid attaching listeners
+          // check if already within viewport to avoid attaching listeners
           if (isInViewport(this.placeholderImage)) {
               this.loadImage()
           } else {
@@ -130,6 +130,7 @@ class GracefulImage extends Component {
   */
   componentWillUnmount () {
       this._isMounted = false
+
       if (this.timeout) {
           window.clearTimeout(this.timeout)
       }
@@ -141,42 +142,51 @@ class GracefulImage extends Component {
     following the default / provided retry algorithm
   */
   handleImageRetries (image) {
+      const {
+          src,
+          retry: {
+              count,
+              delay,
+              accumulate
+          },
+          onError
+      } = this.props
+      const {
+          retryCount,
+          retryDelay
+      } = this.state
       // if we are not mounted anymore, we do not care, and we can bail
-      if (!this._isMounted) {
-          return
-      }
+      if (!this._isMounted) return
 
       this.setState({ loaded: false }, () => {
-          if (this.state.retryCount <= this.props.retry.count) {
+          if (retryCount <= count) {
               this.timeout = setTimeout(() => {
                   // if we are not mounted anymore, we do not care, and we can bail
-                  if (!this._isMounted) {
-                      return
-                  }
+                  if (!this._isMounted) return
 
                   // re-attempt fetching the image
-                  image.src = this.props.src
+                  image.src = src
 
                   // update count and delay
                   this.setState(prevState => {
-                      let updateDelay
+                      let updatedRetryDelay
 
-                      if (this.props.retry.accumulate === 'multiply') {
-                          updateDelay = prevState.retryDelay * this.props.retry.delay
-                      } else if (this.props.retry.accumulate === 'add') {
-                          updateDelay = prevState.retryDelay + this.props.retry.delay
+                      if (accumulate === 'multiply') {
+                          updatedRetryDelay = prevState.retryDelay * delay
+                      } else if (accumulate === 'add') {
+                          updatedRetryDelay = prevState.retryDelay + delay
                       } else {
-                          updateDelay = this.props.retry.delay
+                          updatedRetryDelay = delay
                       }
 
                       return {
-                          retryDelay: updateDelay,
+                          retryDelay: updatedRetryDelay,
                           retryCount: prevState.retryCount + 1
                       }
                   })
-              }, this.state.retryDelay * 1000)
+              }, retryDelay * 1000)
           } else {
-              this.props.onError()
+              onError()
           }
       })
   }
@@ -187,31 +197,46 @@ class GracefulImage extends Component {
     - Else render the placeholder
   */
   render () {
-      if (!this.state.loaded && this.props.noPlaceholder) { return null }
-
-      const src = this.state.loaded ? this.props.src : this.state.placeholder
-      const style = this.state.loaded
+      const {
+          src,
+          noPlaceholder,
+          placeholderColor,
+          srcSet,
+          className,
+          width,
+          height,
+          style,
+          alt
+      } = this.props
+      const {
+          loaded,
+          placeholder
+      } = this.state
+      const imageSrc = loaded ? src : placeholder
+      const imageStyle = loaded
           ? {
               animationName: 'gracefulimage',
               animationDuration: '0.3s',
               animationIterationCount: 1,
               animationTimingFunction: 'ease-in'
           }
-          : { background: this.props.placeholderColor }
+          : { background: placeholderColor }
+
+      if (!loaded && noPlaceholder) return null
 
       return (
           <img
-              src={src}
-              srcSet={this.props.srcSet}
-              className={this.props.className}
-              width={this.props.width}
-              height={this.props.height}
-              style={{
-                  ...style,
-                  ...this.props.style
-              }}
-              alt={this.props.alt}
-              ref={ref => (this.placeholderImage = ref)}
+              src={ imageSrc }
+              srcSet={ srcSet }
+              className={ className }
+              width={ width }
+              height={ height }
+              style={ {
+                  ...imageStyle,
+                  ...style
+              } }
+              alt={ alt }
+              ref={ ref => (this.placeholderImage = ref) }
           />
       )
   }
