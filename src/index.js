@@ -63,7 +63,7 @@ class GracefulImage extends Component {
    */
     setLoaded () {
         if (this._isMounted) {
-            this.setState({ loaded: true })
+            this.setState({ loaded: true }, this.props.onLoad)
         }
     }
 
@@ -160,14 +160,13 @@ class GracefulImage extends Component {
                   // update count and delay
                   this.setState(prevState => {
                       let updateDelay
+
                       if (this.props.retry.accumulate === 'multiply') {
                           updateDelay = prevState.retryDelay * this.props.retry.delay
                       } else if (this.props.retry.accumulate === 'add') {
                           updateDelay = prevState.retryDelay + this.props.retry.delay
-                      } else if (this.props.retry.accumulate === 'noop') {
-                          updateDelay = this.props.retry.delay
                       } else {
-                          updateDelay = 'multiply'
+                          updateDelay = this.props.retry.delay
                       }
 
                       return {
@@ -176,6 +175,8 @@ class GracefulImage extends Component {
                       }
                   })
               }, this.state.retryDelay * 1000)
+          } else {
+              this.props.onError()
           }
       })
   }
@@ -223,9 +224,10 @@ GracefulImage.defaultProps = {
         delay: 2,
         accumulate: 'multiply'
     },
-    noRetry: false,
     noPlaceholder: false,
-    noLazyLoad: false
+    noLazyLoad: false,
+    onLoad: () => {},
+    onError: () => {}
 }
 
 export default GracefulImage
