@@ -28,6 +28,8 @@ module.exports = {
   ],
   rules: {
     indent: ['error', 4],
-    'react/prop-types': [0]
+    'react/prop-types': [0],
+    'react/jsx-curly-spacing': ['error', 'always'],
+    'arrow-parens': ['error', 'as-needed']
   }
 };
