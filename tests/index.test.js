@@ -9,7 +9,7 @@ Enzyme.configure({ adapter: new Adapter() })
 describe('react-graceful-image client', () => {
     it('should render without errors', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150'
         }
@@ -17,9 +17,9 @@ describe('react-graceful-image client', () => {
         ReactDOM.render(<GracefulImage { ...props } />, div)
     })
 
-    it('should render SVG placeholder when image has not loaded', () => {
+    it('should render placeholder when image has not loaded', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150'
         }
@@ -31,9 +31,25 @@ describe('react-graceful-image client', () => {
         expect(mountWrapper.find('img').prop('height')).toEqual(props.height)
     })
 
+    it('should render custom placeholder when image has not loaded', () => {
+        const props = {
+            src: 'fake.png',
+            width: '150',
+            height: '150',
+            className: 'custom-placeholder'
+        }
+        const mountWrapper = mount(<GracefulImage customPlaceholder={ ref => <img ref={ ref } { ...props } /> } />)
+
+        expect(mountWrapper.find('img').length).toBe(1)
+        expect(mountWrapper.find('img').prop('src')).toEqual('fake.png')
+        expect(mountWrapper.find('img').prop('width')).toEqual(props.width)
+        expect(mountWrapper.find('img').prop('height')).toEqual(props.height)
+        expect(mountWrapper.find('img').prop('className')).toEqual('custom-placeholder')
+    })
+
     it('should render image when image has loaded', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150'
         }
@@ -48,7 +64,7 @@ describe('react-graceful-image client', () => {
 
     it('should not render anything when given noPlaceholder prop until image has loaded', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150',
             noPlaceholder: true
@@ -62,7 +78,7 @@ describe('react-graceful-image client', () => {
 
     it('should change placeholder\'s color', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150',
             placeholderColor: '#aaa'
@@ -77,7 +93,7 @@ describe('react-graceful-image client', () => {
 
     it('should change placeholder\'s and loaded image\'s alt value', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150',
             alt: 'hello world'
@@ -91,7 +107,7 @@ describe('react-graceful-image client', () => {
 
     it('should apply className to placeholder image and loaded image', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150',
             className: 'graceful_image'
@@ -109,7 +125,7 @@ describe('react-graceful-image client', () => {
 
     it('should register load, scroll, resize and gestureend event listeners', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150'
         }
@@ -127,7 +143,7 @@ describe('react-graceful-image client', () => {
 
     it('should not register any event listeners when given noLazyLoad prop', () => {
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150',
             noLazyLoad: true
@@ -149,7 +165,7 @@ describe('react-graceful-image client', () => {
         }
         const onLoad = () => done()
         const props = {
-            src: 'https://linasmickevicius.com/images/browser.png',
+            src: 'fake.png',
             width: '150',
             height: '150',
             noLazyLoad: true,
