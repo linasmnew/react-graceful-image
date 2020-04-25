@@ -35,21 +35,12 @@ npm install --save react-graceful-image
 ### Basic Usage
 
 ```js
-import React, { Component } from 'react';
-import Image from 'react-graceful-image';
-
-class YourComponent extends Component {
-  render() {
-    return (
-      <Image
-        src='path_to_image'
-        width='300'
-        height='300'
-        alt='My awesome image'
-      />
-    );
-  }
-}
+<Image
+    src='path_to_image'
+    width='300'
+    height='300'
+    alt='My awesome image'
+/>
 ```
 
 ### Default Behaviour
@@ -72,6 +63,7 @@ class YourComponent extends Component {
 | **`style`**            | Image styles                                                                     | _none_                                           | _object_ |
 | **`placeholderColor`** | Placeholder's color                                                              | _`'#eee'`_                                       | _string_ |
 | **`noPlaceholder`**    | Turn off placeholder rendering                                                   | _false_                                          | _bool_   |
+| **`customPlaceholder`**    | Provide a custom placeholder. This should be a function taking a ref and setting it on your custom placeholder so that its position could be observed within the viewport | _null_ | _Function returning a component_   |
 | **`retry`**            | Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate` | _`{count: 8, delay: 2, accumulate: 'multiply'}`_ | _object_ |
 | **`onLoad`**            | Callback that will be invoked when an image loads | _none_ | _function_ |
 | **`onError`**            | Callback that will be invoked after the retry algorithm has finished and the image still hasn't been loaded | _none_ | _function_ |
@@ -97,11 +89,11 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 
 ```js
 <Image
-  src='path_to_image'
-  className='content-image'
-  alt='My awesome image'
-  onLoad={ onLoadCallback }
-  onError={ onErrorCallback }
+    src='path_to_image'
+    className='content-image'
+    alt='My awesome image'
+    onLoad={ onLoadCallback }
+    onError={ onErrorCallback }
 />
 ```
 
@@ -110,29 +102,29 @@ You can modify the default retry algorithm by supplying a `retry` prop consistin
 
 ```js
 <Image
-  src='path_to_image'
-  width='250'
-  height='250'
-  style={{ padding: '20px' }}
-  alt='My awesome image'
-  retry={{ count: 10, delay: 2 }}
-  onLoad={ onLoadCallback }
-  onError={ onErrorCallback }
+    src='path_to_image'
+    width='250'
+    height='250'
+    style={{ padding: '20px' }}
+    alt='My awesome image'
+    retry={{ count: 10, delay: 2 }}
+    onLoad={ onLoadCallback }
+    onError={ onErrorCallback }
 />
 ```
 
-**3**: The below code snippet will display a blue placeholder until the user scrolls it into view at which point it will be lazily swapped in for the real image. If, however, the real image fails to load, then the retry algorithm is going to kick in and try loading the image again for a maximum of 15 times, with initial delay of 3 seconds which will then increase to 6 seconds, then to 9 seconds, then to 12 seconds, and so on.
+**3**: The below code snippet will display, a custom, your own provided placeholder until the user scrolls it into view at which point it will be lazily swapped in for the real image. If, however, the real image fails to load, then the retry algorithm is going to kick in and try loading the image again for a maximum of 15 times, with initial delay of 3 seconds which will then increase to 6 seconds, then to 9 seconds, then to 12 seconds, and so on.
 
 ```js
 <Image
-  src='path_to_image'
-  width='150'
-  height='150'
-  style={{ padding: '20px' }}
-  alt='My awesome image'
-  placeholderColor='#0083FE'
-  retry={{ count: 15, delay: 3, accumulate: 'add' }}
-  onLoad={ onLoadCallback }
-  onError={ onErrorCallback }
+    src='path_to_image'
+    width='150'
+    height='150'
+    style={{ padding: '20px' }}
+    alt='My awesome image'
+    customPlaceholder={ ref => <SomePlaceholder refProp={ ref } /> }
+    retry={{ count: 15, delay: 3, accumulate: 'add' }}
+    onLoad={ onLoadCallback }
+    onError={ onErrorCallback }
 />
 ```

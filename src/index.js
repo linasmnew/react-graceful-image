@@ -37,8 +37,7 @@ class GracefulImage extends Component {
         this.state = {
             loaded: false,
             retryDelay: this.props.retry.delay,
-            retryCount: 1,
-            placeholder: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+            retryCount: 1
         }
     }
 
@@ -86,7 +85,7 @@ class GracefulImage extends Component {
     and remove all event listeners associated with it
   */
   lazyLoad = () => {
-      if (isInViewport(this.placeholderImage)) {
+      if (isInViewport(this.imageRef)) {
           this.clearEventListeners()
           this.loadImage()
       }
@@ -103,7 +102,7 @@ class GracefulImage extends Component {
       // if user wants to lazy load
       if (!this.props.noLazyLoad) {
           // check if already within viewport to avoid attaching listeners
-          if (isInViewport(this.placeholderImage)) {
+          if (isInViewport(this.imageRef)) {
               this.loadImage()
           } else {
               registerListener('load', this.throttledFunction)
@@ -191,6 +190,10 @@ class GracefulImage extends Component {
       })
   }
 
+  setImageRef = el => {
+      this.imageRef = el
+  }
+
   /*
     - If image hasn't yet loaded AND user didn't want a placeholder then don't render anything
     - Else if image has loaded then render the image
@@ -206,13 +209,11 @@ class GracefulImage extends Component {
           width,
           height,
           style,
-          alt
+          alt,
+          customPlaceholder
       } = this.props
-      const {
-          loaded,
-          placeholder
-      } = this.state
-      const imageSrc = loaded ? src : placeholder
+      const { loaded } = this.state
+      const imageSrc = loaded ? src : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
       const imageStyle = loaded
           ? {
               animationName: 'gracefulimage',
@@ -222,23 +223,27 @@ class GracefulImage extends Component {
           }
           : { background: placeholderColor }
 
-      if (!loaded && noPlaceholder) return null
-
-      return (
-          <img
-              src={ imageSrc }
-              srcSet={ srcSet }
-              className={ className }
-              width={ width }
-              height={ height }
-              style={ {
-                  ...imageStyle,
-                  ...style
-              } }
-              alt={ alt }
-              ref={ ref => (this.placeholderImage = ref) }
-          />
-      )
+      if (!loaded && noPlaceholder) {
+          return null
+      } else if (!loaded && customPlaceholder) {
+          return customPlaceholder(this.setImageRef)
+      } else {
+          return (
+              <img
+                  src={ imageSrc }
+                  srcSet={ srcSet }
+                  className={ className }
+                  width={ width }
+                  height={ height }
+                  style={ {
+                      ...imageStyle,
+                      ...style
+                  } }
+                  alt={ alt }
+                  ref={ this.setImageRef }
+              />
+          )
+      }
   }
 }
 
@@ -249,6 +254,7 @@ GracefulImage.defaultProps = {
         delay: 2,
         accumulate: 'multiply'
     },
+    customPlaceholder: null,
     noPlaceholder: false,
     noLazyLoad: false,
     onLoad: () => {},
