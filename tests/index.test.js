@@ -138,4 +138,44 @@ describe('react-graceful-image client', () => {
         expect(spy).toHaveBeenCalledTimes(0)
         spy.mockClear()
     })
+
+    it('should fire onLoad prop when image loads', (done) => {
+        global.Image = class {
+            constructor () {
+                setTimeout(() => {
+                    this.onload()
+                }, 0)
+            }
+        }
+        const onLoad = () => done()
+        const props = {
+            src: 'https://linasmickevicius.com/images/browser.png',
+            width: '150',
+            height: '150',
+            noLazyLoad: true,
+            onLoad
+        }
+        const mountWrapper = mount(<GracefulImage {...props} />)
+        mountWrapper.setState({ loaded: true })
+    })
+
+    it('should fire onError prop when image fails to load after reaching the retry limit', (done) => {
+        global.Image = class {
+            constructor () {
+                setTimeout(() => {
+                    this.onerror()
+                }, 0)
+            }
+        }
+        const onError = () => done()
+        const props = {
+            src: '',
+            width: '150',
+            height: '150',
+            retry: { count: 0, delay: 1 },
+            onError
+        }
+        const mountWrapper = mount(<GracefulImage {...props} />)
+        mountWrapper.setState({ loaded: true })
+    })
 })
