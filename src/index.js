@@ -1,20 +1,16 @@
 import React, { Component } from 'react'
 import throttle from 'lodash.throttle'
 
-let observer = null
-
 const registerObserver = (el, callback) => {
-    if (!observer) {
-        observer = new IntersectionObserver(
-            (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        callback()
-                        observer.unobserve(el)
-                    }
-                })
+    const observer = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    callback()
+                    observer.unobserve(el)
+                }
             })
-    }
+        })
     observer.observe(el)
 }
 
@@ -85,7 +81,7 @@ class GracefulImage extends Component {
     /*
     Attempts to download an image, and tracks its success / failure
   */
-    loadImage = () => {
+    loadImage (src) {
         const image = new Image()
 
         image.onload = () => {
@@ -94,7 +90,7 @@ class GracefulImage extends Component {
         image.onerror = () => {
             this.handleImageRetries(image)
         }
-        image.src = this.props.src
+        image.src = src
     }
 
   /*
@@ -123,7 +119,7 @@ class GracefulImage extends Component {
               this.loadImage()
           } else {
               if ('IntersectionObserver' in window) {
-                  registerObserver(this.imageRef, this.loadImage)
+                  registerObserver(this.imageRef, () => this.loadImage(this.props.src))
               } else {
                   registerListener('load', this.throttledFunction)
                   registerListener('scroll', this.throttledFunction)
