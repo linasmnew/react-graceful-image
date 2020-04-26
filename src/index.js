@@ -221,15 +221,12 @@ class GracefulImage extends Component {
   render () {
       const {
           src,
-          noPlaceholder,
-          placeholderColor,
-          srcSet,
-          className,
-          width,
-          height,
           style,
-          alt,
-          customPlaceholder
+          placeholderColor,
+          customPlaceholder,
+          noPlaceholder,
+          noLazyLoad,
+          ...nativeImageProps
       } = this.props
       const { loaded } = this.state
       const imageSrc = loaded ? src : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
@@ -250,16 +247,12 @@ class GracefulImage extends Component {
           return (
               <img
                   src={ imageSrc }
-                  srcSet={ srcSet }
-                  className={ className }
-                  width={ width }
-                  height={ height }
                   style={ {
                       ...imageStyle,
                       ...style
                   } }
-                  alt={ alt }
                   ref={ this.setImageRef }
+                  { ...nativeImageProps }
               />
           )
       }
@@ -267,6 +260,7 @@ class GracefulImage extends Component {
 }
 
 GracefulImage.defaultProps = {
+    style: {},
     placeholderColor: '#eee',
     retry: {
         count: 8,

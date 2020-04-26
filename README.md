@@ -54,20 +54,14 @@ npm install --save react-graceful-image
 
 | Prop                   | Description                                                                      | Default                                          | Type     |
 | ---------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ | -------- |
-| **`src`**              | Image url / path                                                                 | _none_                                           | _string_ |
-| **`srcSet`**           | One or more Image urls / paths and their sizes                                   | _none_                                           | _string_ |
-| **`width`**            | Image width                                                                      | _none_                                           | _string_ |
-| **`height`**           | Image height                                                                     | _none_                                           | _string_ |
-| **`className`**        | Image class name                                                                 | _none_                                           | _string_ |
-| **`alt`**              | Image description                                                                | _`'Broken image placeholder'`_                   | _string_ |
-| **`style`**            | Image styles                                                                     | _none_                                           | _object_ |
+| **`Any valid html image prop`**   | Any valid html image prop | _none_  | _valid html image prop_   |
 | **`placeholderColor`** | Placeholder's color                                                              | _`'#eee'`_                                       | _string_ |
 | **`noPlaceholder`**    | Turn off placeholder rendering                                                   | _false_                                          | _bool_   |
 | **`customPlaceholder`**    | Provide a custom placeholder. This should be a function taking a ref and setting it on your custom placeholder so that its position could be observed within the viewport | _null_ | _Function returning a component_   |
 | **`retry`**            | Retry algorithm's configuration, consisting of `count`, `delay` and `accumulate` | _`{count: 8, delay: 2, accumulate: 'multiply'}`_ | _object_ |
 | **`onLoad`**            | Callback that will be invoked when an image loads | _none_ | _function_ |
 | **`onError`**            | Callback that will be invoked after the retry algorithm has finished and the image still hasn't been loaded | _none_ | _function_ |
-| **`noLazyLoad`**       | Turn off lazy loading                                                            | _false_                                          | _bool_   |
+| **`noLazyLoad`**       | Turn off lazy loading   | _false_    | _bool_   |
 
 ### Retry
 
