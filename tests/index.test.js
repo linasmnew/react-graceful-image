@@ -195,10 +195,12 @@ describe('react-graceful-image client', () => {
         mountWrapper.setState({ loaded: false })
     })
 
-    it('should register IntersectionObserver when supported', () => {
+    it('should only ever register a single IntersectionObserver when supported', () => {
+        const observe = jest.fn()
+        const unobserve = jest.fn()
         window.IntersectionObserver = jest.fn(() => ({
-            observe: jest.fn(),
-            unobserve: jest.fn()
+            observe,
+            unobserve
         }))
         const props = {
             src: 'fake.png',
@@ -206,9 +208,11 @@ describe('react-graceful-image client', () => {
             height: '150'
         }
         shallow(<GracefulImage { ...props } />)
+        shallow(<GracefulImage { ...props } />)
+        shallow(<GracefulImage { ...props } />)
 
-        expect(window.IntersectionObserver).toHaveBeenCalled()
         expect(window.IntersectionObserver).toHaveBeenCalledTimes(1)
+        expect(observe).toHaveBeenCalledTimes(3)
         window.IntersectionObserver.mockClear()
     })
 })
