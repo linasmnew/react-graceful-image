@@ -15,6 +15,6 @@ describe('react-graceful-image SSR', () => {
             width: '150',
             height: '150'
         }
-        render(<GracefulImage {...props} />)
+        render(<GracefulImage { ...props } />)
     })
 })
