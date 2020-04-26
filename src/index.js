@@ -81,7 +81,7 @@ class GracefulImage extends Component {
     /*
     Attempts to download an image, and tracks its success / failure
   */
-    loadImage (src) {
+    loadImage = () => {
         const image = new Image()
 
         image.onload = () => {
@@ -90,7 +90,7 @@ class GracefulImage extends Component {
         image.onerror = () => {
             this.handleImageRetries(image)
         }
-        image.src = src
+        image.src = this.props.src
     }
 
   /*
@@ -119,10 +119,11 @@ class GracefulImage extends Component {
               this.loadImage()
           } else {
               if ('IntersectionObserver' in window) {
-                  registerObserver(this.imageRef, () => this.loadImage(this.props.src))
+                  registerObserver(this.imageRef, this.loadImage)
               } else {
                   registerListener('load', this.throttledFunction)
                   registerListener('scroll', this.throttledFunction)
+                  registerListener('wheel', this.throttledFunction)
                   registerListener('resize', this.throttledFunction)
                   registerListener('gestureend', this.throttledFunction) // to detect pinch on mobile devices
               }
@@ -136,6 +137,7 @@ class GracefulImage extends Component {
       this.throttledFunction.cancel()
       window.removeEventListener('load', this.throttledFunction)
       window.removeEventListener('scroll', this.throttledFunction)
+      window.removeEventListener('wheel', this.throttledFunction)
       window.removeEventListener('resize', this.throttledFunction)
       window.removeEventListener('gestureend', this.throttledFunction)
   }
