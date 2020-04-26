@@ -133,11 +133,12 @@ describe('react-graceful-image client', () => {
         shallow(<GracefulImage { ...props } />)
 
         expect(spy).toHaveBeenCalled()
-        expect(spy).toHaveBeenCalledTimes(4)
+        expect(spy).toHaveBeenCalledTimes(5)
         expect(spy.mock.calls[0][0]).toEqual('load')
         expect(spy.mock.calls[1][0]).toEqual('scroll')
-        expect(spy.mock.calls[2][0]).toEqual('resize')
-        expect(spy.mock.calls[3][0]).toEqual('gestureend')
+        expect(spy.mock.calls[2][0]).toEqual('wheel')
+        expect(spy.mock.calls[3][0]).toEqual('resize')
+        expect(spy.mock.calls[4][0]).toEqual('gestureend')
         spy.mockClear()
     })
 
@@ -193,5 +194,24 @@ describe('react-graceful-image client', () => {
         }
         const mountWrapper = mount(<GracefulImage { ...props } />)
         mountWrapper.setState({ loaded: false })
+    })
+
+    it('should register an IntersectionObserver when supported', () => {
+        const observe = jest.fn()
+        const unobserve = jest.fn()
+        window.IntersectionObserver = jest.fn(() => ({
+            observe,
+            unobserve
+        }))
+        const props = {
+            src: 'fake.png',
+            width: '150',
+            height: '150'
+        }
+        shallow(<GracefulImage { ...props } />)
+
+        expect(window.IntersectionObserver).toHaveBeenCalledTimes(1)
+        expect(observe).toHaveBeenCalledTimes(1)
+        window.IntersectionObserver.mockClear()
     })
 })

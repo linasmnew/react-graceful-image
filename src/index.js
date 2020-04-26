@@ -1,6 +1,19 @@
 import React, { Component } from 'react'
 import throttle from 'lodash.throttle'
 
+const registerObserver = (el, callback) => {
+    const observer = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    callback()
+                    observer.unobserve(el)
+                }
+            })
+        })
+    observer.observe(el)
+}
+
 const registerListener = (event, fn) => {
     if (window.addEventListener) {
         window.addEventListener(event, fn)
@@ -68,7 +81,7 @@ class GracefulImage extends Component {
     /*
     Attempts to download an image, and tracks its success / failure
   */
-    loadImage () {
+    loadImage = () => {
         const image = new Image()
 
         image.onload = () => {
@@ -89,7 +102,7 @@ class GracefulImage extends Component {
           this.clearEventListeners()
           this.loadImage()
       }
-  };
+  }
 
   /*
     Attempts to load an image src passed via props
@@ -101,14 +114,19 @@ class GracefulImage extends Component {
 
       // if user wants to lazy load
       if (!this.props.noLazyLoad) {
-          // check if already within viewport to avoid attaching listeners
+          // check if already within viewport to avoid attaching observer / listeners
           if (isInViewport(this.imageRef)) {
               this.loadImage()
           } else {
-              registerListener('load', this.throttledFunction)
-              registerListener('scroll', this.throttledFunction)
-              registerListener('resize', this.throttledFunction)
-              registerListener('gestureend', this.throttledFunction) // to detect pinch on mobile devices
+              if ('IntersectionObserver' in window) {
+                  registerObserver(this.imageRef, this.loadImage)
+              } else {
+                  registerListener('load', this.throttledFunction)
+                  registerListener('scroll', this.throttledFunction)
+                  registerListener('wheel', this.throttledFunction)
+                  registerListener('resize', this.throttledFunction)
+                  registerListener('gestureend', this.throttledFunction) // to detect pinch on mobile devices
+              }
           }
       } else {
           this.loadImage()
@@ -119,6 +137,7 @@ class GracefulImage extends Component {
       this.throttledFunction.cancel()
       window.removeEventListener('load', this.throttledFunction)
       window.removeEventListener('scroll', this.throttledFunction)
+      window.removeEventListener('wheel', this.throttledFunction)
       window.removeEventListener('resize', this.throttledFunction)
       window.removeEventListener('gestureend', this.throttledFunction)
   }
